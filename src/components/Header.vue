@@ -1,22 +1,30 @@
 <template>
     <div class="header-container" :style="{background: colors.header.bg}">
-        <slot name="header" :colors="colors" :chatTitle="chatTitle"
+        <!-- <slot name="header" :colors="colors" :chatTitle="chatTitle"
               :participants="participants"
-              :myself="myself"></slot>
+              :myself="myself"></slot> -->
         <div v-if="!hasHeaderSlot" class="header-title">
             <p class="header-title-text" :style="{color: colors.header.text}">{{chatTitle}}</p>
-            <p class="header-paticipants-text">
+            <!-- <p class="header-paticipants-text">
                 <span>{{myself.name}}, </span>
                 <span v-for="(participant, index) in participants" :key="participant.id">{{participant.name}}{{participants.length - index - 1 ? ', ' : ''}}</span>
-            </p>
+            </p> -->
+            <div class="top-bar-tool">
+                <!-- <button class="cui-button" *ngIf="!this.consultant||this.consultant.type!=2" (click)="openComplaint()">投诉</button> -->
+                <!-- <ng-container *ngIf="!currentChatClose"> -->
+                    <!-- <button class="cui-button flaticon-close" (click)="close()"></button> -->    
+                <!-- </ng-container> -->
+                <button class="cui-button">投诉</button>
+                <button class="cui-button">x</button>
+            </div>
         </div>
 
-        <div v-if="!hideCloseButton && !hasHeaderSlot" class="header-exit">
+        <!-- <div v-if="!hideCloseButton && !hasHeaderSlot" class="header-exit">
             <slot name="close-button">
                 <a class="header-exit-button" href="#" :style="{fontSize: closeButtonIconSize}"
                    @click.prevent="onClose">✕</a>
             </slot>
-        </div>
+        </div> -->
     </div>
 </template>
 
@@ -80,22 +88,45 @@
     }
 </script>
 
-<style lang="less">
+<style lang="scss">
     .quick-chat-container .header-container {
-        height: 70px;
-        display: flex;
-        padding: 0 20px 0 10px;
-        align-items: center;
-        -webkit-box-shadow: 0 2px 20px 2px rgba(90, 90, 90, 0.47);
-        box-shadow: 0 2px 20px 2px rgba(90, 90, 90, 0.47);
+        padding: .8em;
+        width: 100%;
+        // height: 2.78rem;
         z-index: 5;
 
         .header-title {
-            padding: 10px;
-            flex: 1;
+            // padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
             text-align: left;
+            font-size: 1.2rem;
         }
-
+        .top-bar-tool {
+            position: absolute;
+            right: 0;
+            .cui-button {
+                // float: right;
+                background-color: #fff;
+                color: #000;
+                box-shadow: unset;
+                padding: 0;
+                margin: 0;
+                font-size: 1em;
+                margin-left: 0.5em;
+                border: 0px;
+                border-radius: 2px;
+                letter-spacing: 1px;
+                user-select: none;
+                touch-action: manipulation;
+                cursor: pointer;
+                &:focus{
+                    outline: none;
+                }
+            }
+        }
         .header-title-text {
             margin-bottom: 0;
         }

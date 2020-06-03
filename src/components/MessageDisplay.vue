@@ -4,6 +4,14 @@
         <div v-if="loading" class="loader">
             <div class="message-loading"></div>
         </div>
+
+        <!-- <div *ngIf="!this.hasLog" class="center-text">无历史纪录</div>
+        <div *ngIf="this.hasLog" class="center-text cui-link-button" (click)="queryLog()">查询历史纪录
+        </div> -->
+        <div class="center-text">无历史纪录</div>
+        <div class="center-text cui-link-button">查询历史纪录
+        </div>
+
         <div v-for="(message, index) in messages" :key="index" class="message-container">
             <MyMessage v-if="message.myself" :message="message" :async-mode="asyncMode"
                        :colors="colors"
@@ -154,12 +162,13 @@
 <style lang="less">
     .quick-chat-container .container-message-display {
         flex: 1;
-        overflow-y: scroll;
-        overflow-x: hidden;
+        overflow-y: auto;
+        // overflow-x: hidden;
         display: flex;
         flex-direction: column;
         padding-bottom: 10px;
         max-height: 100%;
+        // height: calc(100% - 48.59px - 65px);
                 /************** Safari 10.1+ ********************/
         @media not all and (min-resolution:.001dpcm)
         { @supports (-webkit-appearance:none) {
@@ -277,6 +286,20 @@
             margin: 10px 10px 0px 10px;
             font-size: 12px;
             font-weight: bold;
+        }
+
+        .center-text {
+            text-align: center;
+            line-height: 3em;
+            color: #999;
+            font-size: .8rem;
+        }
+
+        .cui-link-button {
+            padding: 0.2em 0.8em 0.2em 0.8em;
+            cursor: pointer;
+            -webkit-text-decoration-line: underline;
+            text-decoration-line: underline;
         }
     }
 

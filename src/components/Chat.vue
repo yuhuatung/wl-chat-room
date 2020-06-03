@@ -1,6 +1,7 @@
 <template>
-    <div class="quick-chat-container"
-         :style="{'border-bottom-left-radius': borderStyle.bottomLeft, 'border-bottom-right-radius': borderStyle.bottomRight, 'border-top-right-radius': borderStyle.topRight, 'border-top-left-radius': borderStyle.topLeft}">
+    <!-- <div class="quick-chat-container"
+         :style="{'border-bottom-left-radius': borderStyle.bottomLeft, 'border-bottom-right-radius': borderStyle.bottomRight, 'border-top-right-radius': borderStyle.topRight, 'border-top-left-radius': borderStyle.topLeft}"> -->
+    <div class="quick-chat-container">
         <Header v-if="displayHeader" :colors="colors" :border-style="borderStyle" 
                 :hide-close-button="hideCloseButton" :close-button-icon-size="closeButtonIconSize" @onClose="onClose()">
             <template #header>

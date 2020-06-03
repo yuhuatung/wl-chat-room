@@ -16,8 +16,8 @@
                 </div>
             </template>
             <template v-else>
-                <div class="message-text" :style="{background: colors.message.others.bg, color: colors.message.others.text}">
-                    <p class="message-username">{{getParticipantById(message.participantId).name}}</p>
+                <p class="message-username">{{getParticipantById(message.participantId).name}}</p>
+                <div class="message-text" :style="{background: colors.message.others.bg, color: colors.message.others.text}">                
                     <p>{{message.content}}</p>
                 </div>
             </template>
@@ -91,7 +91,7 @@
 <style lang="less">
     .container-message-display .other-message-body{
         display: flex;
-        align-items: flex-end;
+        // align-items: flex-end;
         padding-left: 10px;
 
         .message-content{
@@ -128,11 +128,11 @@
             line-height: 14px;
             border-radius: 15px;
             margin: 5px 0 5px 0;
-            max-width: 70%;
+            max-width: 90%;
             overflow-wrap: break-word;
             text-align: left;
             white-space: pre-wrap;
-            border-bottom-left-radius: 0px;
+            border-top-left-radius: 0px;
             word-break: break-word;
         }
     }

@@ -12,8 +12,8 @@
                 </div>
             </template>
             <template v-else>    
+                <p class="message-username">{{myself.name}}</p>
                 <div class="message-text" :style="{background: colors.message.myself.bg, color: colors.message.myself.text}">
-                    <p class="message-username">{{myself.name}}</p>
                     <p>{{message.content}}</p>
                 </div>
             </template>
@@ -91,7 +91,7 @@
 <style lang="less">
     .container-message-display .myself-message-body{
         display: flex;
-        align-items: flex-end;
+        // align-items: flex-end;
         padding-right: 10px;
         justify-content: flex-end;
 
@@ -134,7 +134,7 @@
             overflow-wrap: break-word;
             text-align: left;
             white-space: pre-wrap;
-            border-bottom-right-radius: 0px;
+            border-top-right-radius: 0px;
             word-break: break-word;
         }
     }

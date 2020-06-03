@@ -27,7 +27,7 @@
                       @onType="onType"
                       @onClose="onClose('param value')"/>
             </div>
-            <div class="external-controller">
+            <!-- <div class="external-controller">
                 <div class="controller-btn-container">
                     <button class="btn-message" @click="addMessage">Add menssage</button>
                     <button class="btn-participant" @click="addParticipant">Add participant</button>
@@ -40,7 +40,7 @@
                         </li>
                     </ol>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>
@@ -123,26 +123,26 @@
                         type: 'text'
                     },
                 ],
-                chatTitle: 'My chat title',
+                chatTitle: '金马在线客服',
                 placeholder: 'send your message',
                 colors: {
                     header: {
-                        bg: '#d30303',
-                        text: '#fff'
+                        bg: '#fff',
+                        // text: '#fff'
                     },
                     message: {
                         myself: {
-                            bg: '#fff',
-                            text: '#525252'
+                            bg: '#4290FF',
+                            text: '#fff'
                         },
                         others: {
-                            bg: '#fb4141',
-                            text: '#fff'
+                            bg: '#fff',
+                            text: '#333'
                         },
                         messagesDisplay: {
                             //bg: 'rgb(247, 243, 243)',
                             //bg: '#f7f3f3'
-                            bg: '#f7f3f3'
+                            bg: '#F6F6F6'
                         }
                     },
                     submitIcon: '#b91010',
@@ -344,13 +344,17 @@
 </script>
 
 <style>
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
     #app {
         font-family: 'Avenir', Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         text-align: center;
         color: #2c3e50;
-        margin-top: 60px;
     }
 
     .content {
@@ -359,6 +363,7 @@
         align-items: center;
         justify-content: space-evenly;
         flex-wrap: wrap;
+        height: 100vh;
     }
 
     .chat-container {
@@ -366,9 +371,9 @@
         align-items: center;
         justify-content: center;
         background: rgb(247, 243, 243);
-        padding: 10px 0 10px 0;
-        height: 500px;
-        width: 350px;
+        /* padding: 10px 0 10px 0; */
+        height: 100%;
+        width: 100%;
     }
 
     .external-controller {
