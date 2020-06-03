@@ -1,8 +1,8 @@
 {
-  "name": "vue-quick-chat",
+  "name": "wl-chat-room",
   "version": "1.2.2",
   "private": false,
-  "main": "./dist/vue-quick-chat.common.js",
+  "main": "./dist/wl-chat-room.common.js",
   "files": [
     "dist/*",
     "src/*",
@@ -19,7 +19,7 @@
     "vuejs",
     "simple-chat"
   ],
-  "repository": "https://github.com/MatheusrdSantos/vue-quick-chat",
+  "repository": "",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
+    "emoji-mart-vue": "^2.6.6",
     "luxon": "^1.21.3",
     "vue": "^2.6.10",
     "vue-material-design-icons": "^4.4.0",
