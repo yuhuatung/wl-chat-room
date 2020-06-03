@@ -15,7 +15,7 @@
                     <!-- <button class="cui-button flaticon-close" (click)="close()"></button> -->    
                 <!-- </ng-container> -->
                 <button class="cui-button">投诉</button>
-                <button class="cui-button">x</button>
+                <button class="cui-button flaticon-close"></button>
             </div>
         </div>
 
@@ -114,7 +114,7 @@
                 box-shadow: unset;
                 padding: 0;
                 margin: 0;
-                font-size: 1em;
+                font-size: .8em;
                 margin-left: 0.5em;
                 border: 0px;
                 border-radius: 2px;
@@ -124,6 +124,9 @@
                 cursor: pointer;
                 &:focus{
                     outline: none;
+                }
+                &::before{
+                    font-size: .7em;
                 }
             }
         }

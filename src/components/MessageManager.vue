@@ -21,10 +21,6 @@
                 cdkAutosizeMaxRows="5" #autosize="cdkTextareaAutosize" type="text" [(ngModel)]="text"
           (keyup)="typing()" id="clear"></textarea>-->
           <textarea placeholder="请输入消息..." type="text" id="clear" v-model="text"></textarea>
-          <!-- <div *ngIf="isQQ" class="send-btn has-text" (click)="send(); triggerResize()"> -->
-          <div class="send-btn has-text" @click="send();triggerResize()">
-            <div class="icon-send">发送</div>
-          </div>
           <!-- <div *ngIf="!isQQ" class="send-btn {{text?'has-text':''}}" (click)="send(); triggerResize()"> -->
           <div class="send-btn" :class="text?'has-text':''" @click="send();triggerResize()">
             <div class="icon-send">发送</div>
@@ -49,8 +45,16 @@
           <span tooltip="上传挡案" class="icon"></span>
           <p>档案</p>
         </div>
-        <div class="emoji">
-            <i class="flaticon-smile" @click="showEmoji=!showEmoji"><picker v-show="showEmoji" title="表情符号" @select="addEmoji" :i18n="i18n" :style="emojiStyle"/></i>
+        <div class="emoji" @click="showEmoji.mobile=!showEmoji.mobile">
+          <i class="flaticon-smile">
+            <picker
+              v-show="showEmoji.mobile"
+              @select="addEmoji"
+              title="表情符号"
+              :i18n="i18n"
+              :style="emojiStyle.mobile"
+            />
+          </i>
           <p>表情</p>
         </div>
         <!-- <div *ngIf="!this.consultant||this.consultant.type!=2" (click)="score()"> -->
@@ -74,7 +78,15 @@
             <span tooltip="上传挡案" class="icon"></span>
           </div>
           <div class="emoji">
-              <i class="flaticon-smile" @click="showEmoji=!showEmoji"><picker v-if="showEmoji" title="表情符号" @select="addEmoji" :i18n="i18n" :style="emojiStyle"/></i>
+            <i class="flaticon-smile" @click="showEmoji.pc=!showEmoji.pc">
+              <picker
+                v-show="showEmoji.pc"
+                title="表情符号"
+                @select="addEmoji"
+                :i18n="i18n"
+                :style="emojiStyle.pc"
+              />
+            </i>
           </div>
           <!-- <div *ngIf="!this.consultant||this.consultant.type!=2" (click)="score()"> -->
           <div @click="score()">
@@ -85,11 +97,11 @@
         <div class="bottom-part">
           <!-- <textarea type="text" placeholder="请输入消息" [(ngModel)]="text" (keyup)="typing()" (keyup.enter)="send()">
           </textarea>-->
-          <textarea type="text" placeholder="请输入消息"></textarea>
+          <textarea v-model="text" type="text" placeholder="请输入消息"></textarea>
         </div>
       </div>
       <!-- <div class="send-btn {{text?'has-text':''}}" (click)="send()"> -->
-      <div class="send-btn" @click="send()">发送</div>
+      <div class="send-btn" :class="text !== ''?'has-text':''" @click="send()">发送</div>
     </footer>
   </div>
 </template>
@@ -100,7 +112,7 @@ import { mapMutations } from "vuex";
 import { DateTime } from "luxon";
 import SendIcon from "vue-material-design-icons/Send";
 import ImageIcon from "vue-material-design-icons/Image";
-import { Picker } from 'emoji-mart-vue'
+import { Picker } from "emoji-mart-vue";
 export default {
   components: {
     SendIcon,
@@ -150,40 +162,52 @@ export default {
                 default: () => false
             }, */
     sendImages: {
-        type: Boolean,
-        required: false,
-        default: true
+      type: Boolean,
+      required: false,
+      default: true
     }
   },
   data() {
     return {
-        textInput: "",
-        text: "",
-        show: false,
-        showEmoji: false,
-        i18n: {
-            search: '搜索',
-            notfound: '未找到',
-            categories: {
-                search: '搜索结果',
-                recent: '最近使用',
-                people: '表情符号与人物',
-                nature: '动物与自然',
-                foods: '饮食',
-                activity: '活动',
-                places: '旅游与地点',
-                objects: '物品',
-                symbols: '符号',
-                flags: '旗帜'
-            }
-        },
-        emojiStyle: {
-            width: '355px',
-            position: 'absolute',
-            bottom: '80px',
-            right: '20px' ,
-            zIndex: 9999
+      textInput: "",
+      text: "",
+      show: false,
+      showEmoji: {
+        pc: false,
+        mobile: false
+      },
+      i18n: {
+        search: "搜索",
+        notfound: "未找到",
+        categories: {
+          search: "搜索结果",
+          recent: "最近使用",
+          people: "表情符号与人物",
+          nature: "动物与自然",
+          foods: "饮食",
+          activity: "活动",
+          places: "旅游与地点",
+          objects: "物品",
+          symbols: "符号",
+          flags: "旗帜"
         }
+      },
+      emojiStyle: {
+        pc: {
+          width: "355px",
+          position: "fixed",
+          left: 0,
+          bottom: "100px",
+          zIndex: 9999
+        },
+        mobile: {
+          width: "355px",
+          position: "fixed",
+          left: 0,
+          bottom: "60px",
+          zIndex: 9999
+        }
+      }
     };
   },
   computed: {
@@ -196,13 +220,13 @@ export default {
   },
   methods: {
     showMore() {
-        this.show = !this.show
+      this.show = !this.show;
     },
     send() {},
     triggerResize() {},
-    selectImage(){},
-    selectFile(){},
-    score(){},
+    selectImage() {},
+    selectFile() {},
+    score() {},
     ...mapMutations(["newMessage"]),
     sendMessage(e) {
       this.textInput = this.$refs.userInput.textContent;
@@ -250,9 +274,8 @@ export default {
       //this.onImageSelected(files, message)
       this.newMessage(message);
     },
-    addEmoji(e){
-        this.showEmoji = false;
-        console.log(e.native)
+    addEmoji(e) {
+      this.text += e.native;
     }
   }
 };
@@ -370,10 +393,11 @@ export default {
         border: none;
         border-radius: 5rem;
         width: 100%;
-        padding: 9px 1.25rem;
+        padding: .5rem 1.25rem;
         overflow-y: hidden;
         resize: none;
         height: 2.1875rem;
+        font-size: 1rem;
         &:focus {
           outline: none;
         }
@@ -395,7 +419,7 @@ export default {
       .send-btn {
         // transform: scale(0);
         // transition: transform .3s;
-        color: #fff;
+        color: #999;
         position: absolute;
         right: 0.5rem;
 
@@ -427,8 +451,9 @@ export default {
       -webkit-transform: rotate(0deg);
       -o-transform: rotate(0deg);
       cursor: pointer;
+      margin: auto;
       i {
-        font-size: 1.6em;
+        font-size: 1.5em;
       }
     }
 
@@ -460,7 +485,7 @@ export default {
     }
 
     .flaticon-folder-1 {
-      font-size: 1.875rem;
+      font-size: 1rem;
     }
   }
 
@@ -483,7 +508,7 @@ export default {
   }
 
   .bottom-part i {
-    font-size: 1.875em;
+    font-size: 1.5rem;
   }
 }
 .pc-footer {
@@ -494,14 +519,14 @@ export default {
     border-right: 1px solid #e7e6e9;
     display: flex;
     flex-direction: column;
-
+    background-color: #fff;
     .top-part {
       height: 1.93rem;
       display: flex;
       padding: 0.33rem 0.93rem 0;
 
       i {
-        font-size: 1.3em;
+        font-size: 1em;
       }
 
       & > div {
@@ -527,6 +552,10 @@ export default {
         resize: none;
         line-height: 1.5;
         border: unset;
+        font-size: 1.2rem;
+        &:focus {
+          outline: none;
+        }
       }
     }
   }
@@ -535,8 +564,9 @@ export default {
     width: 5rem;
     text-align: center;
     line-height: 6.25rem;
-    font-size: 1.1em;
+    font-size: 0.9em;
     color: #999;
+    background: #fff;
   }
 
   .has-text {
