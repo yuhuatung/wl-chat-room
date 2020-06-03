@@ -50,7 +50,7 @@
           <p>档案</p>
         </div>
         <div class="emoji">
-          <!-- <app-emoji [select]="onEmojiSelect"></app-emoji> -->
+            <i class="flaticon-smile" @click="showEmoji=!showEmoji"><picker v-show="showEmoji" title="表情符号" @select="addEmoji" :i18n="i18n" :style="emojiStyle"/></i>
           <p>表情</p>
         </div>
         <!-- <div *ngIf="!this.consultant||this.consultant.type!=2" (click)="score()"> -->
@@ -74,7 +74,7 @@
             <span tooltip="上传挡案" class="icon"></span>
           </div>
           <div class="emoji">
-            <!-- <app-emoji [select]="onEmojiSelect"></app-emoji> -->
+              <i class="flaticon-smile" @click="showEmoji=!showEmoji"><picker v-if="showEmoji" title="表情符号" @select="addEmoji" :i18n="i18n" :style="emojiStyle"/></i>
           </div>
           <!-- <div *ngIf="!this.consultant||this.consultant.type!=2" (click)="score()"> -->
           <div @click="score()">
@@ -100,10 +100,12 @@ import { mapMutations } from "vuex";
 import { DateTime } from "luxon";
 import SendIcon from "vue-material-design-icons/Send";
 import ImageIcon from "vue-material-design-icons/Image";
+import { Picker } from 'emoji-mart-vue'
 export default {
   components: {
     SendIcon,
-    ImageIcon
+    ImageIcon,
+    Picker
   },
   props: {
     /* onType: {
@@ -148,16 +150,40 @@ export default {
                 default: () => false
             }, */
     sendImages: {
-      type: Boolean,
-      required: false,
-      default: true
+        type: Boolean,
+        required: false,
+        default: true
     }
   },
   data() {
     return {
-      textInput: "",
-      text: "",
-      show: false
+        textInput: "",
+        text: "",
+        show: false,
+        showEmoji: false,
+        i18n: {
+            search: '搜索',
+            notfound: '未找到',
+            categories: {
+                search: '搜索结果',
+                recent: '最近使用',
+                people: '表情符号与人物',
+                nature: '动物与自然',
+                foods: '饮食',
+                activity: '活动',
+                places: '旅游与地点',
+                objects: '物品',
+                symbols: '符号',
+                flags: '旗帜'
+            }
+        },
+        emojiStyle: {
+            width: '355px',
+            position: 'absolute',
+            bottom: '80px',
+            right: '20px' ,
+            zIndex: 9999
+        }
     };
   },
   computed: {
@@ -223,6 +249,10 @@ export default {
       this.$emit("onImageSelected", { file: files[0], message });
       //this.onImageSelected(files, message)
       this.newMessage(message);
+    },
+    addEmoji(e){
+        this.showEmoji = false;
+        console.log(e.native)
     }
   }
 };
