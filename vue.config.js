@@ -2,6 +2,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
     publicPath: '',
+    lintOnSave: false,
     css: { extract: true },
     configureWebpack: {
         optimization: {
