@@ -1,6 +1,6 @@
 module.exports = {
     parserOptions: {
-        parser: "babel-eslint",
+        parser: "@typescript-eslint/parser",
     },
     extends: [
         // add more generic rulesets here, such as:
