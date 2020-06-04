@@ -2,32 +2,39 @@
   <div id="app">
     <div class="content">
       <div class="chat-container">
-        <Chat
-          v-if="visible"
-          :participants="participants"
-          :myself="myself"
-          :messages="messages"
-          :chat-title="chatTitle"
-          :placeholder="placeholder"
-          :colors="colors"
-          :border-style="borderStyle"
-          :hide-close-button="hideCloseButton"
-          :close-button-icon-size="closeButtonIconSize"
-          :submit-icon-size="submitIconSize"
-          :submit-image-icon-size="submitImageIconSize"
-          :load-more-messages="toLoad.length > 0 ? loadMoreMessages : null"
-          :async-mode="asyncMode"
-          :scroll-bottom="scrollBottom"
-          :display-header="true"
-          :send-images="true"
-          :profile-picture-config="profilePictureConfig"
-          :timestamp-config="timestampConfig"
-          @onImageClicked="onImageClicked"
-          @onImageSelected="onImageSelected"
-          @onMessageSubmit="onMessageSubmit"
-          @onType="onType"
-          @onClose="onClose('param value')"
-        />
+        <transition :name="slideDirection">
+          <Chat
+            v-if="visible"
+            v-show="!showCustomerComplaint"
+            :participants="participants"
+            :myself="myself"
+            :messages="messages"
+            :chat-title="chatTitle"
+            :placeholder="placeholder"
+            :colors="colors"
+            :border-style="borderStyle"
+            :hide-close-button="hideCloseButton"
+            :close-button-icon-size="closeButtonIconSize"
+            :submit-icon-size="submitIconSize"
+            :submit-image-icon-size="submitImageIconSize"
+            :load-more-messages="toLoad.length > 0 ? loadMoreMessages : null"
+            :async-mode="asyncMode"
+            :scroll-bottom="scrollBottom"
+            :display-header="true"
+            :send-images="true"
+            :profile-picture-config="profilePictureConfig"
+            :timestamp-config="timestampConfig"
+            @onImageClicked="onImageClicked"
+            @onImageSelected="onImageSelected"
+            @onMessageSubmit="onMessageSubmit"
+            @onType="onType"
+            @onClose="onClose('param value')"
+            @showCustomerComplaint="show"
+          />
+        </transition>
+        <transition :name="slideDirection">
+          <CustomerComplaint v-show="showCustomerComplaint" @showCustomerComplaint="show" />
+        </transition>
       </div>
       <!-- <div class="external-controller">
                 <div class="controller-btn-container">
@@ -49,11 +56,13 @@
 
 <script>
 import Chat from "./components/Chat.vue";
+import CustomerComplaint from "./components/CustomerComplaint.vue";
 
 export default {
   name: "app",
   components: {
-    Chat
+    Chat,
+    CustomerComplaint
   },
   data() {
     return {
@@ -260,7 +269,9 @@ export default {
       timestampConfig: {
         format: "HH:mm",
         relative: false
-      }
+      },
+      showCustomerComplaint: false,
+      slideDirection: ""
     };
   },
   methods: {
@@ -459,6 +470,10 @@ export default {
        * You can add your code here to do whatever you need with the image clicked. A common situation is to display the image clicked in full screen.
        */
       console.log("Image clicked", message.src);
+    },
+    show(b,d) {
+      this.slideDirection = d
+      this.showCustomerComplaint = b;
     }
   }
 };
@@ -478,6 +493,7 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  outline: none;
 }
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
@@ -549,5 +565,34 @@ body {
 
 .btn-message:hover {
   background: rgb(255, 255, 255);
+}
+
+.slideLeft-enter-to {
+  transition: all 0.5s ease;
+  transform: translateX(0);
+}
+.slideLeft-leave-active {
+  transition: all 0.5s ease;
+  transform: translateX(-100%);
+}
+.slideLeft-enter {
+  transform: translateX(100%);
+}
+.slideLeft-leave {
+  transform: translateX(0);
+}
+.slideRight-enter-to {
+  transition: all 0.5s ease;
+  transform: translateX(0);
+}
+.slideRight-leave-active {
+  transition: all 0.5s ease;
+  transform: translateX(100%);
+}
+.slideRight-enter {
+  transform: translateX(-100%);
+}
+.slideRight-leave {
+  transform: translateX(0);
 }
 </style>
