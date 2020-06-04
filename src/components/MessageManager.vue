@@ -115,6 +115,8 @@ import ImageIcon from "vue-material-design-icons/Image";
 import { Picker } from 'emoji-mart-vue';
 import { FileUtil } from '@/ts/util/file-util';
 import { NotifyService } from '@/ts/component/notify-service';
+import { ChatService } from '@/ts/service/chat-service';
+import { Global } from '@/ts/globle';
 import {
   Chat,
   ChatCloseScore,
@@ -132,6 +134,13 @@ import {
   ExtendChatRecord,
   SubProduct,
 } from '@/ts/constant/chat';
+import { AjaxMethod } from '@/ts/lib/cui/core/ajax/ajax.enums';
+import { AjaxUtil } from '@/ts/lib/cui/core/ajax/ajax-util';
+import { Cache } from '@/ts/lib/cui/core/decorators/cache';
+import { Delay } from '@/ts/lib/cui/core/decorators/async';
+import { IAjaxManagerResult } from '@/ts/lib/cui/core/ajax/ajax.interfaces';
+import { CUI } from '@/ts/lib/cui/core/cui';
+import { TryCatchTrace } from '@/ts/lib/cui/core/decorators/try-catch-trace';
 
 export default {
   components: {
@@ -230,7 +239,8 @@ export default {
         imageElement: '',
         fileElement:'',
         listeners: {},
-        consultant: ''
+        consultant: '',
+        messagesRef: ''
       },
     };
   },
@@ -243,18 +253,51 @@ export default {
     }
   },
   created(){
-    this.initListener();
+    // this.messagesElement = this.messagesRef.nativeElement;
+
+    let queryParamter = Global.queryString ? Global.getQueryParamter() : undefined;
+    if (!this.consultant) {
+      Global.loader.open('配对客服中...');
+    }
+    this.initCustomer(this.customer);
+    let form = CUI.deepClone({}, queryParamter);
+    let record = this.findLastChatRecordByLog();
+    if (record) {
+      form['time'] = record.time;
+      form['id'] = record.id;
+    }
+    console.log(record)
+    ChatService.init(form, (result) => {
+      if (result.success) {
+        this.subProduct = result.added.subProduct;
+        this.initTitle();
+        this.initCustomer(result.data);
+        this.currentChat = result.added.chat;
+        this.appendChat(result.added.chat);
+        this.consultant = result.added.consultant;
+        this.appendLastChatRecord(result.added.records);
+        this.init();
+        // this.cdf.markForCheck();
+      } else {
+        alert(result.message);
+        window.close();
+      }
+      Global.loader.close();
+    });
   },
   mounted(){
+      this.fileElement = document.createElement('input');
+      this.fileElement.type = 'file';
+      this.fileElement.addEventListener('change', this.uploads);
       this.imageElement = document.createElement('input');
       this.imageElement.type = 'file';
       this.imageElement.accept = 'image/*';
       this.imageElement.addEventListener('change', this.uploadImages);
+      this.initNotify();
+      this.initListener();
+      NotifyService.open('/chat');
   },
   methods: {
-    showMore() {
-      this.show = !this.show;
-    },
     ...mapMutations(["newMessage"]),
     sendMessage(e) {
       this.textInput = this.$refs.userInput.textContent;
@@ -317,16 +360,17 @@ export default {
     },
 
     init() {
-      this.fileElement = document.createElement('input');
-      this.fileElement.type = 'file';
-      this.fileElement.addEventListener('change', this.uploads);
-      this.imageElement = document.createElement('input');
-      this.imageElement.type = 'file';
-      this.imageElement.accept = 'image/*';
-      this.imageElement.addEventListener('change', this.uploadImages);
-      this.initNotify();
-      this.initListener();
-      NotifyService.open('/chat');
+      // mounted()
+      // this.fileElement = document.createElement('input');
+      // this.fileElement.type = 'file';
+      // this.fileElement.addEventListener('change', this.uploads);
+      // this.imageElement = document.createElement('input');
+      // this.imageElement.type = 'file';
+      // this.imageElement.accept = 'image/*';
+      // this.imageElement.addEventListener('change', this.uploadImages);
+      // this.initNotify();
+      // this.initListener();
+      // NotifyService.open('/chat');
     },
 
     /**
@@ -754,8 +798,6 @@ export default {
       //   alert('您好，智能客服目前不支持挡案上传。');
       //   return;
       // } 
-      console.log(this.imageElement);
-      
       this.imageElement.click();
     },
 
