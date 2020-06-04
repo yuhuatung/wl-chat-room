@@ -31,6 +31,7 @@
     "core-js": "^2.6.5",
     "emoji-mart-vue": "^2.6.6",
     "luxon": "^1.21.3",
+    "moment": "^2.26.0",
     "vue": "^2.6.10",
     "vue-material-design-icons": "^4.4.0",
     "vuex": "^3.0.1"
