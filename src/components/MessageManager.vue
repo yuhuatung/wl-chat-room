@@ -114,6 +114,24 @@ import SendIcon from "vue-material-design-icons/Send";
 import ImageIcon from "vue-material-design-icons/Image";
 import { Picker } from 'emoji-mart-vue';
 import { FileUtil } from '@/ts/util/file-util';
+import { NotifyService } from '@/ts/component/notify-service';
+import {
+  Chat,
+  ChatCloseScore,
+  ChatConsultant,
+  ChatEventType,
+  ChatMessage,
+  ChatInfo,
+  ChatRecordDataType,
+  ChatRecordSendType,
+  ChatSwitchUser,
+  Consultant,
+  Customer,
+  CustomerTypeEnum,
+  CustomerType,
+  ExtendChatRecord,
+  SubProduct,
+} from '@/ts/constant/chat';
 
 export default {
   components: {
@@ -211,6 +229,8 @@ export default {
         },
         imageElement: '',
         fileElement:'',
+        listeners: {},
+        consultant: ''
       },
     };
   },
@@ -221,6 +241,9 @@ export default {
     placeholder() {
       return this.$store.state.placeholder;
     }
+  },
+  created(){
+    this.initListener();
   },
   mounted(){
       this.imageElement = document.createElement('input');
@@ -371,48 +394,53 @@ export default {
         }
       });
       // 聊天室資料
-      // this.listeners[ChatEventType.CHATINFO] = NotifyService.listener<ChatInfo>(ChatEventType.CHATINFO, (message) => {
-      //   this.initCustomer(message.customer);
-      //   this.appendChat(message.chat);
-      //   this.consultant = message.consultant;
-      //   // this.userComponent.refresh(message.consultant);
-      //   if (this.currentChat && this.chatRecordLog[this.currentChat.id].length == 0) {
-      //     this.queryLog();
-      //   }
-      //   Global.loader.close();
-      // });
 
+      this.listeners[ChatEventType.CHATINFO] = NotifyService.listener(ChatEventType.CHATINFO, (message) => {
+        this.initCustomer(message.customer);
+        this.appendChat(message.chat);
+        this.consultant = message.consultant;
+        // this.userComponent.refresh(message.consultant);
+        if (this.currentChat && this.chatRecordLog[this.currentChat.id].length == 0) {
+          this.queryLog();
+        }
+        // this.cdf.detectChanges();
+        // Global.loader.close();
+      });
       // 監聽聊天訊息
-      // this.listeners[ChatEventType.MESSAGE] = NotifyService.listener<ChatMessage>(ChatEventType.MESSAGE, (message) => {
-      //   let record = message.data;
+      this.listeners[ChatEventType.MESSAGE] = NotifyService.listener(ChatEventType.MESSAGE, (message) => {
+        let record = message.data;
 
-      //   // 暫時不處理自己發送的訊息
-      //   if (this.sending && record.sendType == ChatRecordSendType.CUSTOMER) {
-      //     this.waitMessage.push(message);
-      //   } else {
-      //     this.scrollDown = true;
-      //     this.sendNotification(record);
-      //     this.appendChatRecord(record);
-      //     this.doScrollTop();
-      //   }
-      // });
+        // 暫時不處理自己發送的訊息
+        if (this.sending && record.sendType == ChatRecordSendType.CUSTOMER) {
+          this.waitMessage.push(message);
+        } else {
+          this.scrollDown = true;
+          this.sendNotification(record);
+          this.appendChatRecord(record);
+          this.doScrollTop();
+          // this.cdf.detectChanges();
+        }
+      });
 
       // 客服轉接
-      // this.listeners[ChatEventType.SWITCH_USER] = NotifyService.listener<ChatSwitchUser>(ChatEventType.SWITCH_USER, (message) => {
-      //   this.switchUser(message);
-      //   this.appendChatRecord(message.data);
-      //   this.doScrollTop();
-      // });
+      this.listeners[ChatEventType.SWITCH_USER] = NotifyService.listener(ChatEventType.SWITCH_USER, (message) => {
+        this.switchUser(message);
+        this.appendChatRecord(message.data);
+        this.doScrollTop();
+        this.cdf.detectChanges();
+      });
 
-      // this.listeners[ChatEventType.TYPING] = NotifyService.listener<ChatConsultant>(ChatEventType.TYPING, (message) => {
-      // });
+      this.listeners[ChatEventType.TYPING] = NotifyService.listener(ChatEventType.TYPING, (message) => {
+        this.cdf.detectChanges();
+      });
 
       // 結束聊天評分
-      // this.listeners[ChatEventType.CLOSESCORE] = NotifyService.listener<ChatCloseScore>(ChatEventType.CLOSESCORE, (message) => {
-      //   this.currentChat = message.chat;
-      //   this.appendChat(this.currentChat);
-      //   this.currentChat.otp = message.otp;
-      // });
+      this.listeners[ChatEventType.CLOSESCORE] = NotifyService.listener(ChatEventType.CLOSESCORE, (message) => {
+        this.currentChat = message.chat;
+        this.appendChat(this.currentChat);
+        this.currentChat.otp = message.otp;
+        this.cdf.detectChanges();
+      });
 
     },
 
