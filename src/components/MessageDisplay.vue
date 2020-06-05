@@ -231,7 +231,7 @@ export default {
     },
     getMessageTime(record) {
       //會報錯(martin)
-      // return this.$parent.getMessageTime(record)
+      return this.$parent.getMessageTime(record)
     },
     download(record) {
       this.$parent.download(record);

@@ -46,8 +46,8 @@
           </div>
         </template>-->
       </template>
-      <!-- <div class="message-timestamp" :style="{'justify-content': 'flex-end'}">
-        <template v-if="timestampConfig.relative">{{message.timestamp.toRelative()}}</template>
+      <div class="message-timestamp" :style="{'justify-content': 'flex-end'}">
+        <!-- <template v-if="timestampConfig.relative">{{message.timestamp.toRelative()}}</template>
         <template v-else>{{message.timestamp.toFormat(timestampConfig.format)}}</template>
         <CheckIcon
           v-if="asyncMode && message.uploaded && !message.viewed"
@@ -59,8 +59,9 @@
           :size="14"
           class="icon-sent viewed"
         />
-        <div v-else-if="asyncMode" class="message-loading"></div>
-      </div>-->
+        <div v-else-if="asyncMode" class="message-loading"></div> -->
+        {{getMessageTime}}
+      </div>
     </div>
     <div v-if="profilePictureConfig.myself" class="thum-container">
       <img
@@ -177,7 +178,6 @@ export default {
     padding: 2px 7px;
     border-radius: 15px;
     margin: 0;
-    max-width: 50%;
     overflow-wrap: break-word;
     text-align: left;
     font-size: 10px;
