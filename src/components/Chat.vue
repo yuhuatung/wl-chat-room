@@ -30,6 +30,7 @@
       :submit-icon-size="submitIconSize"
       :submit-image-icon-size="submitImageIconSize"
       :send-images="sendImages"
+      :consultant="consultant"
       @onImageSelected="onImageSelected"
       @onMessageSubmit="onMessageSubmit"
       @onType="onType"
@@ -51,6 +52,7 @@ import { FileUtil } from "@/ts/util/file-util";
 import { NotifyService } from "@/ts/component/notify-service";
 import { ChatService } from "@/ts/service/chat-service";
 import { Global } from "@/ts/globle";
+import { RecordStorage } from '@/ts/component/record-storage';
 import {
   Chat,
   ChatCloseScore,
@@ -228,8 +230,9 @@ export default {
       imageElement: "",
       fileElement: "",
       listeners: {},
-      consultant: "",
-      messagesRef: ""
+      consultant: {},
+      messagesRef: "",
+      chatStorage: {},
     };
   },
   watch: {
@@ -272,7 +275,6 @@ export default {
       form["time"] = record.time;
       form["id"] = record.id;
     }
-    console.log(record);
     ChatService.init(form, result => {
       if (result.success) {
         this.subProduct = result.added.subProduct;
@@ -285,7 +287,7 @@ export default {
         this.init();
         // this.cdf.markForCheck();
       } else {
-        // alert(result.message);
+        alert(result.message);
         // window.close();
       }
       Global.loader.close();
@@ -421,7 +423,6 @@ export default {
         }
       });
       // 聊天室資料
-
       this.listeners[ChatEventType.CHATINFO] = NotifyService.listener(
         ChatEventType.CHATINFO,
         message => {
@@ -513,16 +514,16 @@ export default {
      * 滾動到指定位置
      */
     // @Delay(200)
-    // public doScrollTop() {
-    //   if (this.messagesElement) {
-    //     if (this.scrollDown) {
-    //       // 滾動到指定位置
-    //       this.messagesElement.scrollTop = this.messagesElement.scrollHeight;
-    //     } else {
-    //       this.messagesElement.scrollTop = this.messagesElement.scrollHeight - this.scrollTop - this.messagesElement.clientHeight;
-    //     }
-    //   }
-    // }
+   doScrollTop() {
+      if (this.messagesElement) {
+        if (this.scrollDown) {
+          // 滾動到指定位置
+          this.messagesElement.scrollTop = this.messagesElement.scrollHeight;
+        } else {
+          this.messagesElement.scrollTop = this.messagesElement.scrollHeight - this.scrollTop - this.messagesElement.clientHeight;
+        }
+      }
+    },
 
     /**
      * 選擇表情符號
@@ -665,7 +666,7 @@ export default {
      */
     reSend(record) {
       record.fail = false;
-      if (record.dataType == this.ChatRecordDataType.TEXT) {
+      if (record.dataType == ChatRecordDataType.TEXT) {
         this.doSend(record);
       } else {
         this.doUpload(record);
@@ -841,7 +842,7 @@ export default {
         id: 0,
         sendType: ChatRecordSendType.CUSTOMER,
         userId: this.consultant.id,
-        dataType: this.ChatRecordDataType.TEXT,
+        dataType: ChatRecordDataType.TEXT,
         data: text,
         unsend: false,
         // , time: DateUtil.now() as number
@@ -1038,13 +1039,13 @@ export default {
      */
     getFileType(type) {
       if (type.startsWith("image")) {
-        return this.ChatRecordDataType.IMAGE;
+        return ChatRecordDataType.IMAGE;
       } else if (type.startsWith("audio")) {
-        return this.ChatRecordDataType.VOICE;
+        return ChatRecordDataType.VOICE;
       } else if (type.startsWith("video")) {
-        return this.ChatRecordDataType.DOC;
+        return ChatRecordDataType.DOC;
       } else {
-        return this.ChatRecordDataType.DOC;
+        return ChatRecordDataType.DOC;
       }
     },
 
@@ -1232,10 +1233,10 @@ export default {
 
     appendFormat(record) {
       switch (record.dataType) {
-        case this.ChatRecordDataType.ANNOUNCEMENT:
+        case ChatRecordDataType.ANNOUNCEMENT:
           record.announce = JSON.parse(record.data);
           break;
-        case this.ChatRecordDataType.BOT:
+        case ChatRecordDataType.BOT:
           record.botData = JSON.parse(record.data);
           break;
       }
@@ -1321,12 +1322,12 @@ export default {
      * @param array
      */
     initChatStroage(array) {
-      // return new RecordStorage<Chat>({
-      //   logLimit: 200
-      //   , logs: array
-      //   , key: (r) => r.id
-      //   , sort: (a, b) => a.time > b.time ? 1 : (a.time == b.time ? (a.id > b.id ? 1 : a.id == b.id ? 0 : -1) : -1)
-      // });
+      return new RecordStorage({
+        logLimit: 200
+        , logs: array
+        , key: (r) => r.id
+        , sort: (a, b) => a.time > b.time ? 1 : (a.time == b.time ? (a.id > b.id ? 1 : a.id == b.id ? 0 : -1) : -1)
+      });
     },
 
     /**

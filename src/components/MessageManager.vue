@@ -135,6 +135,10 @@ export default {
       type: Object,
       required: true
     },
+    consultant: {
+      type: Object,
+      required: true
+    },
     borderStyle: {
       type: Object,
       required: false,
