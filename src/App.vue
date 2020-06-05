@@ -57,6 +57,7 @@
 <script>
 import Chat from "./components/Chat.vue";
 import CustomerComplaint from "./components/CustomerComplaint.vue";
+import { Global } from '@/ts/globle';
 
 export default {
   name: "app",
@@ -273,6 +274,9 @@ export default {
       showCustomerComplaint: false,
       slideDirection: ""
     };
+  },
+  mounted(){
+    Global.parseQueryString();
   },
   methods: {
     // eslint-disable-next-line
