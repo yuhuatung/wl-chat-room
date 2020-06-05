@@ -1155,14 +1155,14 @@ export default {
             this.customer.nickname != null
           ) {
             return (
-              this.CustomerType[this.customer.type] +
+              CustomerType[this.customer.type] +
               "(" +
               this.customer.nickname +
               ")"
             );
           } else {
             return (
-              this.CustomerType[this.customer.type] +
+              CustomerType[this.customer.type] +
               "(" +
               this.customer.id +
               ")"
