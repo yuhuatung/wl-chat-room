@@ -236,6 +236,7 @@ export default {
       messagesRef: "",
       chatStorage: {},
       sendingRecords: [],
+      waitMessage: [],
     };
   },
   watch: {
@@ -743,7 +744,7 @@ export default {
         return;
       }
       for (let i = 0; i < files.length; i++) {
-        // this.upload(files.item(i));
+        this.upload(files.item(i));
       }
       this.imageElement.value = "";
     },
@@ -753,8 +754,8 @@ export default {
      */
     upload(file) {
       let record = this.buildUpload(file);
-      // this.appendSendingRecord(record);
-      // this.doUpload(record);
+      this.appendSendingRecord(record);
+      this.doUpload(record);
     },
 
     /**
@@ -762,7 +763,7 @@ export default {
      */
     doUpload(record) {
       this.sending++;
-      this.cdf.markForCheck();
+      // this.cdf.markForCheck();
       ChatService.upload(
         {
           file: record.file,
@@ -770,7 +771,7 @@ export default {
         },
         (xhr, e) => {
           record.progress = e.loaded;
-          this.cdf.markForCheck();
+          // this.cdf.markForCheck();
         },
         this.sendCallback.bind(this, record)
       );
@@ -791,7 +792,7 @@ export default {
         this.sendFail(oldMessage);
       }
       this.cleanWaitRecord();
-      this.cdf.detectChanges();
+      // this.cdf.detectChanges();
       this.doScrollTop();
     },
 
@@ -809,10 +810,10 @@ export default {
      * 選取图片
      */
     selectImage() {
-      // if (this.consultant.type == 2) {
-      //   alert('您好，智能客服目前不支持挡案上传。');
-      //   return;
-      // }
+      if (this.consultant.type == 2) {
+        alert('您好，智能客服目前不支持挡案上传。');
+        return;
+      }
       this.imageElement.click();
     },
 
@@ -820,10 +821,10 @@ export default {
      * 選取檔案
      */
     selectFile() {
-      // if (this.consultant.type == 2) {
-      //   alert('您好，智能客服目前不支持挡案上传。');
-      //   return;
-      // }
+      if (this.consultant.type == 2) {
+        alert('您好，智能客服目前不支持挡案上传。');
+        return;
+      }
       this.fileElement.click();
     },
 
