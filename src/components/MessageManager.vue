@@ -34,13 +34,13 @@
       <!-- <div class="bottom-part {{show?'show':''}}"> -->
       <div class="bottom-part" :class="show?'show':''">
         <!-- <div *ngIf="!this.consultant||this.consultant.type!=2" (click)="selectImage()"> -->
-        <div @click="selectImage()">
+        <div v-if="!this.consultant||this.consultant.type!=2" @click="selectImage()">
           <i class="flaticon-image"></i>
           <span tooltip="上传图片"></span>
           <p>相册</p>
         </div>
         <!-- <div *ngIf="!this.consultant||this.consultant.type!=2" (click)="selectFile()"> -->
-        <div @click="selectFile()">
+        <div v-if="!this.consultant||this.consultant.type!=2" @click="selectFile()">
           <i class="flaticon-folder"></i>
           <span tooltip="上传挡案" class="icon"></span>
           <p>档案</p>
@@ -58,7 +58,7 @@
           <p>表情</p>
         </div>
         <!-- <div *ngIf="!this.consultant||this.consultant.type!=2" (click)="score()"> -->
-        <div @click="score()">
+        <div v-if="!this.consultant||this.consultant.type!=2" @click="score()">
           <i class="flaticon-love"></i>
           <span tooltip="客户打分" class="icon"></span>
           <p>打分</p>
@@ -69,11 +69,11 @@
       <div class="edit">
         <div class="top-part">
           <!-- <div *ngIf="!this.consultant||this.consultant.type!=2" (click)="selectImage()"> -->
-          <div @click="selectImage()">
+          <div v-if="!this.consultant||this.consultant.type!=2" @click="selectImage()">
             <i class="flaticon-image"></i>
           </div>
           <!-- <div *ngIf="!this.consultant||this.consultant.type!=2" (click)="selectFile()"> -->
-          <div @click="selectFile()">
+          <div v-if="!this.consultant||this.consultant.type!=2" @click="selectFile()">
             <i class="flaticon-folder"></i>
             <span tooltip="上传挡案" class="icon"></span>
           </div>
@@ -89,7 +89,7 @@
             </i>
           </div>
           <!-- <div *ngIf="!this.consultant||this.consultant.type!=2" (click)="score()"> -->
-          <div @click="score()">
+          <div v-if="!this.consultant||this.consultant.type!=2" @click="score()">
             <i class="flaticon-love"></i>
             <span tooltip="客户打分" class="icon"></span>
           </div>
