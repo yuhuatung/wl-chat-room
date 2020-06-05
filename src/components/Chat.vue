@@ -51,6 +51,8 @@ import store from "../store";
 import { FileUtil } from "@/ts/util/file-util";
 import { NotifyService } from "@/ts/component/notify-service";
 import { ChatService } from "@/ts/service/chat-service";
+import { UserService } from '@/ts/service/user-service';
+import { BotService } from '@/ts/service/bot-service';
 import { Global } from "@/ts/globle";
 import { RecordStorage } from '@/ts/component/record-storage';
 import {
@@ -233,6 +235,7 @@ export default {
       consultant: {},
       messagesRef: "",
       chatStorage: {},
+      sendingRecords: [],
     };
   },
   watch: {
