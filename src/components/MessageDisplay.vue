@@ -12,29 +12,59 @@
     <!-- <div *ngIf="!this.hasLog" class="center-text">无历史纪录</div>
         <div *ngIf="this.hasLog" class="center-text cui-link-button" (click)="queryLog()">查询历史纪录
     </div>-->
-    <div class="center-text">无历史纪录</div>
-    <div class="center-text cui-link-button">查询历史纪录</div>
 
-    <div v-for="(message, index) in messages" :key="index" class="message-container">
-      <MyMessage
-        v-if="message.myself"
-        :message="message"
-        :async-mode="asyncMode"
-        :colors="colors"
-        :profile-picture-config="profilePictureConfig"
-        :timestamp-config="timestampConfig"
-        @onImageClicked="onImageClicked"
-      />
-      <OtherMessage
-        v-else
-        :message="message"
-        :async-mode="asyncMode"
-        :colors="colors"
-        :profile-picture-config="profilePictureConfig"
-        :timestamp-config="timestampConfig"
-        @onImageClicked="onImageClicked"
-      />
-    </div>
+    <!-- hasLog還需要改(martin) -->
+    <div v-if="!hasLog" class="center-text">无历史纪录</div>
+    <div v-if="hasLog" class="center-text cui-link-button">查询历史纪录</div>
+    <template v-if="chatStorage">
+      <template v-for="chat in chatStorage.records">
+        <div class="center-text">
+          对话开始
+          <!-- getTimeFormat 無法使用(martin)-->
+          <!-- <span v-text="getTimeFormat(chat.time)"></span> -->
+        </div>
+        <template v-if="chatRecordStorage">
+          <div
+            v-for="(record, index) in chatRecordStorage[chat.id].records"
+            :key="index"
+            class="message-container"
+          >
+            <MyMessage
+              v-if="$parent.getMessageClassName(record) === 'message right'"
+              :async-mode="asyncMode"
+              :colors="colors"
+              :profile-picture-config="profilePictureConfig"
+              :timestamp-config="timestampConfig"
+              :showPortrait="showPortrait(record)"
+              :getMessageClassName="getMessageClassName(record)"
+              :getPortrait="getPortrait(record)"
+              :getMessageTime="getMessageTime(record)"
+              :record="record"
+              :getFileSize="getFileSize(record)"
+              :getMessageName="getMessageName(record)"
+              @download="download(record)"
+              @onImageClicked="onImageClicked"
+            />
+            <OtherMessage
+              v-if="$parent.getMessageClassName(record) === 'message left'"
+              :async-mode="asyncMode"
+              :colors="colors"
+              :profile-picture-config="profilePictureConfig"
+              :timestamp-config="timestampConfig"
+              :showPortrait="showPortrait(record)"
+              :getMessageClassName="getMessageClassName(record)"
+              :getPortrait="getPortrait(record)"
+              :getMessageTime="getMessageTime(record)"
+              :record="record"
+              :getFileSize="getFileSize(record)"
+              :getMessageName="getMessageName(record)"
+              @download="download(record)"
+              @onImageClicked="onImageClicked"
+            />
+          </div>
+        </template>
+      </template>
+    </template>
   </div>
 </template>
 
@@ -77,6 +107,19 @@ export default {
       required: true
     },
     timestampConfig: {
+      type: Object,
+      required: true
+    },
+    hasLog: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    chatStorage: {
+      type: Object,
+      required: true
+    },
+    chatRecordStorage: {
       type: Object,
       required: true
     }
@@ -173,7 +216,37 @@ export default {
     },
     onImageClicked(message) {
       this.$emit("onImageClicked", message);
+    },
+    showPortrait(record) {
+      return this.$parent.showPortrait(record);
+    },
+    getMessageClassName(record) {
+      return this.$parent.getMessageClassName(record);
+    },
+    getPortrait(record) {
+      return this.$parent.getPortrait(record);
+    },
+    getMessageName(record) {
+      return this.$parent.getMessageName(record);
+    },
+    getMessageTime(record) {
+      //會報錯(martin)
+      // return this.$parent.getMessageTime(record)
+    },
+    download(record) {
+      this.$parent.download(record);
+    },
+    getFileSize(record) {
+      return this.$parent.getFileSize(record);
     }
+    // /**
+    //  * 訊息時間
+    //  * @param record
+    //  */
+    // getTimeFormat(time) {
+    //  DateUtil無法引入(martin)
+    //   return DateUtil.format(time, "MMMDo hh:mm:ssa");
+    // }
   }
 };
 </script>
@@ -258,6 +331,7 @@ export default {
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
+    margin-bottom: 10px;
   }
 
   .message-username {

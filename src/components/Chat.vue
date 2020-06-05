@@ -22,7 +22,12 @@
       :scroll-bottom="scrollBottom"
       :profile-picture-config="profilePictureConfig"
       :timestamp-config="timestampConfig"
+      :hasLog="hasLog"
+      :chatStorage="chatStorage"
+      :chatRecordStorage="chatRecordStorage"
       @onImageClicked="onImageClicked"
+      @showPortrait="showPortrait"
+      @getMessageClassName="getMessageClassName"
     />
     <MessageManager
       :colors="colors"
@@ -37,6 +42,7 @@
       @send="send"
       @selectImage="selectImage"
       @selectFile="selectFile"
+      @getMessageClassName="getMessageClassName"
     />
   </div>
 </template>
@@ -52,10 +58,9 @@ import { FileUtil } from "@/ts/util/file-util";
 import { DateUtil } from '@/ts/util/date-util';
 import { NotifyService } from "@/ts/component/notify-service";
 import { ChatService } from "@/ts/service/chat-service";
-import { UserService } from '@/ts/service/user-service';
-import { BotService } from '@/ts/service/bot-service';
+import { UserService } from "@/ts/service/user-service";
+import { BotService } from "@/ts/service/bot-service";
 import { Global } from "@/ts/globle";
-import { RecordStorage } from '@/ts/component/record-storage';
 import {
   Chat,
   ChatCloseScore,
@@ -80,6 +85,7 @@ import { Delay } from "@/ts/lib/cui/core/decorators/async";
 import { IAjaxManagerResult } from "@/ts/lib/cui/core/ajax/ajax.interfaces";
 import { CUI } from "@/ts/lib/cui/core/cui";
 import { TryCatchTrace } from "@/ts/lib/cui/core/decorators/try-catch-trace";
+import { RecordStorage } from "@/ts/component/record-storage";
 export default {
   name: "chat",
   components: {
@@ -238,6 +244,8 @@ export default {
       chatStorage: {},
       sendingRecords: [],
       waitMessage: [],
+      hasLog: false,
+      chatRecordStorage: {},
     };
   },
   watch: {
@@ -292,7 +300,7 @@ export default {
         this.init();
         // this.cdf.markForCheck();
       } else {
-        alert(result.message);
+        // alert(result.message);
         // window.close();
       }
       Global.loader.close();
@@ -519,13 +527,16 @@ export default {
      * 滾動到指定位置
      */
     // @Delay(200)
-   doScrollTop() {
+    doScrollTop() {
       if (this.messagesElement) {
         if (this.scrollDown) {
           // 滾動到指定位置
           this.messagesElement.scrollTop = this.messagesElement.scrollHeight;
         } else {
-          this.messagesElement.scrollTop = this.messagesElement.scrollHeight - this.scrollTop - this.messagesElement.clientHeight;
+          this.messagesElement.scrollTop =
+            this.messagesElement.scrollHeight -
+            this.scrollTop -
+            this.messagesElement.clientHeight;
         }
       }
     },
@@ -1100,7 +1111,7 @@ export default {
         case ChatRecordSendType.CUSTOMER:
           className += "right";
           break;
-      }
+      }      
       return className;
     },
 
@@ -1112,19 +1123,22 @@ export default {
       return DateUtil.format(record.time, "MMMDo hh:mm:ssa");
     },
 
-    /**
-     * 訊息時間
-     * @param record
-     */
-    getTimeFormat(time) {
-      return DateUtil.format(time, "MMMDo hh:mm:ssa");
-    },
+    // 搬到messageDisplay
+    // /**
+    //  * 訊息時間
+    //  * @param record
+    //  */
+    // getTimeFormat(time) {
+    //   return DateUtil.format(time, "MMMDo hh:mm:ssa");
+    // },
 
     /**
      * 發送者名稱
      * @param record
      */
     getMessageName(record) {
+      console.log('123',record);
+      
       switch (record.sendType) {
         case ChatRecordSendType.SYSTEM:
           return "系统讯息";
@@ -1135,7 +1149,7 @@ export default {
             return chat.users[record.userId].nickname;
           }
           return "客服小妹";
-        case ChatRecordSendType.CUSTOMER:
+        case ChatRecordSendType.CUSTOMER:          
           if (
             this.customer.type != CustomerTypeEnum.GUEST &&
             this.customer.nickname != null
@@ -1328,10 +1342,19 @@ export default {
      */
     initChatStroage(array) {
       return new RecordStorage({
-        logLimit: 200
-        , logs: array
-        , key: (r) => r.id
-        , sort: (a, b) => a.time > b.time ? 1 : (a.time == b.time ? (a.id > b.id ? 1 : a.id == b.id ? 0 : -1) : -1)
+        logLimit: 200,
+        logs: array,
+        key: r => r.id,
+        sort: (a, b) =>
+          a.time > b.time
+            ? 1
+            : a.time == b.time
+            ? a.id > b.id
+              ? 1
+              : a.id == b.id
+              ? 0
+              : -1
+            : -1
       });
     },
 
@@ -1340,12 +1363,21 @@ export default {
      * @param array
      */
     initChatRecordStroage(array) {
-      // return new RecordStorage<ExtendChatRecord>({
-      //   logLimit: 200
-      //   , logs: array
-      //   , key: (r) => r.id
-      //   , sort: (a, b) => a.time > b.time ? 1 : (a.time == b.time ? (a.id > b.id ? 1 : a.id == b.id ? 0 : -1) : -1)
-      // });
+      return new RecordStorage({
+        logLimit: 200,
+        logs: array,
+        key: r => r.id,
+        sort: (a, b) =>
+          a.time > b.time
+            ? 1
+            : a.time == b.time
+            ? a.id > b.id
+              ? 1
+              : a.id == b.id
+              ? 0
+              : -1
+            : -1
+      });
     }
   }
 };
