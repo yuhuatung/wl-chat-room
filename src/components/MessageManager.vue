@@ -281,6 +281,25 @@ export default {
     },
     send() {
       this.$emit("send",this.text);
+      if (this.text) {
+        let inputLen = this.text.length;
+        let inputText = this.text;
+        if (this.text[inputLen - 1] === "\n") {
+          inputText = inputText.slice(0, inputLen - 1);
+        }
+        let message = {
+          content: inputText,
+          // myself: true,
+          participantId: this.myself.id,
+          timestamp: DateTime.local(),
+          uploaded: false,
+          viewed: false,
+          type: "text"
+        };
+        this.$emit("onMessageSubmit", message);
+        this.newMessage(message);
+        this.text = '';
+      }
     },
     triggerResize() {
       // this.$emit("triggerResize");
