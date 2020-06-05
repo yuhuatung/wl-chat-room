@@ -162,7 +162,7 @@ export class AjaxManager {
      * 發送請求
      */
     private doRequest = <T = any, V = any, K = any, Y = any>(config: IAjaxManageConfig<T, V, K, Y>): XMLHttpRequest => {
-        let cloneConfig: IAjaxConfig = CUI.deepClone({
+        let cloneConfig = CUI.deepClone({
             isPHP: this.isPHP,
             async: true,
             method: AjaxMethod.GET,
@@ -171,7 +171,7 @@ export class AjaxManager {
         }, config);
         this.initHeader(cloneConfig);
         this.doBeforeRequest(cloneConfig);
-        // cloneConfig.callback = this.resultHandler.bind(this, cloneConfig, cloneConfig.callback);
+        cloneConfig.callback = this.resultHandler.bind(this, cloneConfig, cloneConfig.callback);
         return Ajax.request(cloneConfig);
     }
 
