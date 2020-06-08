@@ -8,6 +8,7 @@
       :border-style="borderStyle"
       :hide-close-button="hideCloseButton"
       :close-button-icon-size="closeButtonIconSize"
+      :chatTitle="chatTitle"
       @onClose="onClose()"
       @showCustomerComplaint="showCustomerComplaint"
     >
@@ -25,9 +26,13 @@
       :hasLog="hasLog"
       :chatStorage="chatStorage"
       :chatRecordStorage="chatRecordStorage"
+      :querying="querying"
       @onImageClicked="onImageClicked"
       @showPortrait="showPortrait"
       @getMessageClassName="getMessageClassName"
+      @queryLog="queryLog"
+      @getKnowledgeSolution="getKnowledgeSolution"
+      ref="messages"
     />
     <MessageManager
       :colors="colors"
@@ -55,7 +60,7 @@ import { mapMutations } from "vuex";
 import store from "../store";
 /////////////////////////////////////////////////
 import { FileUtil } from "@/ts/util/file-util";
-import { DateUtil } from '@/ts/util/date-util';
+import { DateUtil } from "@/ts/util/date-util";
 import { NotifyService } from "@/ts/component/notify-service";
 import { ChatService } from "@/ts/service/chat-service";
 import { UserService } from "@/ts/service/user-service";
@@ -98,19 +103,19 @@ export default {
       type: Array,
       required: true
     },
-    messages: {
-      type: Array,
-      required: true
-    },
+    // messages: {
+    //   type: Array,
+    //   required: true
+    // },
     myself: {
       type: Object,
       required: true
     },
-    chatTitle: {
-      type: String,
-      required: false,
-      default: ""
-    },
+    // chatTitle: {
+    //   type: String,
+    //   required: false,
+    //   default: ""
+    // },
     placeholder: {
       type: String,
       required: false,
@@ -244,8 +249,15 @@ export default {
       chatStorage: {},
       sendingRecords: [],
       waitMessage: [],
-      hasLog: false,
+      hasLog: true,
       chatRecordStorage: {},
+      querying: false,
+      messagesElement: {},
+      scrollTop: "",
+      subProduct: {},
+      chatTitle: "",
+      scrollDown:true,
+      sendingRecords:[]
     };
   },
   watch: {
@@ -255,26 +267,29 @@ export default {
     myself() {
       this.setMyself(this.myself);
     },
-    messages() {
-      this.setMessages(this.messages);
-    },
+    // messages() {
+    //   this.setMessages(this.messages);
+    // },
     placeholder() {
       this.setPlaceholder(this.placeholder);
-    },
-    chatTitle() {
-      this.setChatTitle(this.chatTitle);
     }
+    // chatTitle() {
+    //   this.setChatTitle(this.chatTitle);
+    // }
   },
   beforeCreate() {
     this.$store = store();
   },
-  created() {
-    this.setParticipants(this.participants);
-    this.setMyself(this.myself);
-    this.setMessages(this.messages);
-    this.setPlaceholder(this.placeholder);
-    this.setChatTitle(this.chatTitle);
+  mounted() {
+    // this.setParticipants(this.participants);
+    // this.setMyself(this.myself);
+    // this.setMessages(this.messages);
+    // this.setPlaceholder(this.placeholder);
+    // this.setChatTitle(this.chatTitle);
     //////////////////////////////////////////////
+    this.messagesElement = this.$refs.messages;
+    console.log("123132", this.$refs.messages);
+
     let queryParamter = Global.queryString
       ? Global.getQueryParamter()
       : undefined;
@@ -305,8 +320,6 @@ export default {
       }
       Global.loader.close();
     });
-  },
-  mounted() {
     this.fileElement = document.createElement("input");
     this.fileElement.type = "file";
     this.fileElement.addEventListener("change", this.uploads);
@@ -479,14 +492,14 @@ export default {
           this.switchUser(message);
           this.appendChatRecord(message.data);
           this.doScrollTop();
-          this.cdf.detectChanges();
+          // this.cdf.detectChanges();
         }
       );
 
       this.listeners[ChatEventType.TYPING] = NotifyService.listener(
         ChatEventType.TYPING,
         message => {
-          this.cdf.detectChanges();
+          // this.cdf.detectChanges();
         }
       );
 
@@ -497,7 +510,7 @@ export default {
           this.currentChat = message.chat;
           this.appendChat(this.currentChat);
           this.currentChat.otp = message.otp;
-          this.cdf.detectChanges();
+          // this.cdf.detectChanges();
         }
       );
     },
@@ -574,7 +587,7 @@ export default {
         callback: result => {
           if (result.success) {
             this.currentChatClose = true;
-            this.cdf.markForCheck();
+            // this.cdf.markForCheck();
           } else {
             alert(result.message);
           }
@@ -622,7 +635,7 @@ export default {
         result => {
           if (result.success) {
             this.appendLastChatRecord(result.data);
-            this.cdf.markForCheck();
+            // this.cdf.markForCheck();
             this.doScrollTop();
           } else {
             alert(result.message);
@@ -667,8 +680,8 @@ export default {
         if (result.success) {
           this.appendChats(result.added);
           this.hasLog = this.appendFirstChatRecord(result.data) > 0;
-          this.cdf.markForCheck();
-          this.cdf.detectChanges();
+          // this.cdf.markForCheck();
+          // this.cdf.detectChanges();
           this.doScrollTop();
         } else {
           alert(result.message);
@@ -823,7 +836,7 @@ export default {
      */
     selectImage() {
       if (this.consultant.type == 2) {
-        alert('您好，智能客服目前不支持挡案上传。');
+        alert("您好，智能客服目前不支持挡案上传。");
         return;
       }
       this.imageElement.click();
@@ -834,7 +847,7 @@ export default {
      */
     selectFile() {
       if (this.consultant.type == 2) {
-        alert('您好，智能客服目前不支持挡案上传。');
+        alert("您好，智能客服目前不支持挡案上传。");
         return;
       }
       this.fileElement.click();
@@ -949,7 +962,7 @@ export default {
         if (result.success) {
           this.sendSuccess(record);
           this.cleanWaitRecord();
-          this.cdf.detectChanges();
+          // this.cdf.detectChanges();
           this.doScrollTop();
         } else {
           alert(AjaxUtil.getMessage(result));
@@ -1014,7 +1027,7 @@ export default {
     showImage(record) {
       this.currentRecord = record;
       this.dialog.open();
-      if (this.isQQ) this.cdf.detectChanges();
+      // if (this.isQQ) this.cdf.detectChanges();
     },
 
     resize(multi) {
@@ -1111,7 +1124,7 @@ export default {
         case ChatRecordSendType.CUSTOMER:
           className += "right";
           break;
-      }      
+      }
       return className;
     },
 
@@ -1123,22 +1136,19 @@ export default {
       return DateUtil.format(record.time, "MMMDo hh:mm:ssa");
     },
 
-    // 搬到messageDisplay
-    // /**
-    //  * 訊息時間
-    //  * @param record
-    //  */
-    // getTimeFormat(time) {
-    //   return DateUtil.format(time, "MMMDo hh:mm:ssa");
-    // },
+    /**
+     * 訊息時間
+     * @param record
+     */
+    getTimeFormat(time) {
+      return DateUtil.format(time, "MMMDo hh:mm:ssa");
+    },
 
     /**
      * 發送者名稱
      * @param record
      */
     getMessageName(record) {
-      console.log('123',record);
-      
       switch (record.sendType) {
         case ChatRecordSendType.SYSTEM:
           return "系统讯息";
@@ -1149,7 +1159,7 @@ export default {
             return chat.users[record.userId].nickname;
           }
           return "客服小妹";
-        case ChatRecordSendType.CUSTOMER:          
+        case ChatRecordSendType.CUSTOMER:
           if (
             this.customer.type != CustomerTypeEnum.GUEST &&
             this.customer.nickname != null
@@ -1162,10 +1172,7 @@ export default {
             );
           } else {
             return (
-              CustomerType[this.customer.type] +
-              "(" +
-              this.customer.id +
-              ")"
+              CustomerType[this.customer.type] + "(" + this.customer.id + ")"
             );
           }
       }
@@ -1291,7 +1298,7 @@ export default {
         return;
       }
       let record;
-      // let storage: RecordStorage<ExtendChatRecord>;
+      let storage;
       let c = 0;
       for (let i in records) {
         record = records[i];

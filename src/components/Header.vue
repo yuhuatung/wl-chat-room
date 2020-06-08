@@ -59,6 +59,11 @@ export default {
       type: String,
       required: false,
       default: "15px"
+    },
+    chatTitle: {
+      type: String,
+      required: false,
+      default: "客服"
     }
     /* onClose: {
                 type: Function,
@@ -73,9 +78,9 @@ export default {
     myself() {
       return this.$store.state.myself;
     },
-    chatTitle() {
-      return this.$store.state.chatTitle;
-    },
+    // chatTitle() {
+    //   return this.$store.state.chatTitle;
+    // },
     hasHeaderSlot: function() {
       return !!this.$slots["header"];
     }

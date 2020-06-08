@@ -5,7 +5,7 @@
     class="container-message-display"
     @scroll="updateScrollState"
   >
-    <div v-if="loading" class="loader">
+    <div v-if="querying" class="loader">
       <div class="message-loading"></div>
     </div>
 
@@ -15,18 +15,17 @@
 
     <!-- hasLog還需要改(martin) -->
     <div v-if="!hasLog" class="center-text">无历史纪录</div>
-    <div v-if="hasLog" class="center-text cui-link-button">查询历史纪录</div>
+    <div v-if="hasLog" class="center-text cui-link-button" @click="queryLog">查询历史纪录</div>
     <template v-if="chatStorage">
       <template v-for="chat in chatStorage.records">
         <div class="center-text">
           对话开始
-          <!-- getTimeFormat 無法使用(martin)-->
-          <!-- <span v-text="getTimeFormat(chat.time)"></span> -->
+          <span v-text="getTimeFormat(chat.time)"></span>
         </div>
         <template v-if="chatRecordStorage">
           <div
             v-for="(record, index) in chatRecordStorage[chat.id].records"
-            :key="index"
+            :key="`${chat.id}${index}`"
             class="message-container"
           >
             <MyMessage
@@ -44,6 +43,7 @@
               :getMessageName="getMessageName(record)"
               @download="download(record)"
               @onImageClicked="onImageClicked"
+              @getKnowledgeSolution="getKnowledgeSolution"
             />
             <OtherMessage
               v-if="$parent.getMessageClassName(record) === 'message left'"
@@ -60,6 +60,7 @@
               :getMessageName="getMessageName(record)"
               @download="download(record)"
               @onImageClicked="onImageClicked"
+              @getKnowledgeSolution="getKnowledgeSolution"
             />
           </div>
         </template>
@@ -115,6 +116,11 @@ export default {
       required: false,
       default: false
     },
+    querying: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
     chatStorage: {
       type: Object,
       required: true
@@ -138,30 +144,30 @@ export default {
     this.goToBottom();
     this.$refs.containerMessageDisplay.dispatchEvent(new CustomEvent("scroll"));
   },
-  updated() {
-    if (
-      this.messages.length &&
-      !this.messageCompare(
-        this.messages[this.messages.length - 1],
-        this.lastMessage
-      )
-    ) {
-      if (
-        this.updateScroll ||
-        (this.scrollBottom.messageSent &&
-          this.messages[this.messages.length - 1].participantId ==
-            this.myself.id) ||
-        (this.scrollBottom.messageReceived &&
-          this.messages[this.messages.length - 1].participantId !=
-            this.myself.id)
-      ) {
-        this.goToBottom();
-        if (this.messages.length) {
-          this.lastMessage = this.messages[this.messages.length - 1];
-        }
-      }
-    }
-  },
+  // updated() {
+  //   if (
+  //     this.messages.length &&
+  //     !this.messageCompare(
+  //       this.messages[this.messages.length - 1],
+  //       this.lastMessage
+  //     )
+  //   ) {
+  //     if (
+  //       this.updateScroll ||
+  //       (this.scrollBottom.messageSent &&
+  //         this.messages[this.messages.length - 1].participantId ==
+  //           this.myself.id) ||
+  //       (this.scrollBottom.messageReceived &&
+  //         this.messages[this.messages.length - 1].participantId !=
+  //           this.myself.id)
+  //     ) {
+  //       this.goToBottom();
+  //       if (this.messages.length) {
+  //         this.lastMessage = this.messages[this.messages.length - 1];
+  //       }
+  //     }
+  //   }
+  // },
   methods: {
     ...mapMutations(["setMessages"]),
     /**
@@ -191,22 +197,28 @@ export default {
     updateScrollState({ target: { scrollTop, clientHeight, scrollHeight } }) {
       this.updateScroll = scrollTop + clientHeight >= scrollHeight;
 
-      if (typeof this.loadMoreMessages === "function" && scrollTop < 20) {
+      // if (typeof this.loadMoreMessages === "function" && scrollTop < 20 && this.hasLog && !this.querying) {
+      if (scrollTop < 20 && this.hasLog && !this.querying) {
         this.loading = true;
-        this.loadMoreMessages(messages => {
-          //if (Array.isArray(messages) && messages.length > 0) {
-          /**
-           * this code will be removed before the next release
-           *
-           * this line is commented because the setMessages is already called
-           * when 'this.messages.unshift(...this.toLoad)' is executed at App.vue line 177
-           * it was executing the same function twice, causing unexpected behavior with Luxon date objects
-           */
-          //this.setMessages([...messages, ...this.messages]);
-          //}
-          this.loading = false;
-        });
+        // this.loadMoreMessages(messages => {
+        //if (Array.isArray(messages) && messages.length > 0) {
+        /**
+         * this code will be removed before the next release
+         *
+         * this line is commented because the setMessages is already called
+         * when 'this.messages.unshift(...this.toLoad)' is executed at App.vue line 177
+         * it was executing the same function twice, causing unexpected behavior with Luxon date objects
+         */
+        //this.setMessages([...messages, ...this.messages]);
+        //}
+        // this.loading = false;
+        // });
+
+        this.loading = false;
       }
+    },
+    queryLog() {
+      this.$emit("queryLog");
     },
     goToBottom() {
       let scrollDiv = this.$refs.containerMessageDisplay;
@@ -230,23 +242,23 @@ export default {
       return this.$parent.getMessageName(record);
     },
     getMessageTime(record) {
-      //會報錯(martin)
-      return this.$parent.getMessageTime(record)
+      return this.$parent.getMessageTime(record);
     },
     download(record) {
       this.$parent.download(record);
     },
     getFileSize(record) {
       return this.$parent.getFileSize(record);
+    },
+    getTimeFormat(time) {
+      return this.$parent.getTimeFormat(time);
+    },
+    getKnowledgeSolution(id, problem) {
+      this.$emit("getKnowledgeSolution", id, problem);
+    },
+    isBotRecordEmpty(record) {
+      return this.$parent.isBotRecordEmpty(record)
     }
-    // /**
-    //  * 訊息時間
-    //  * @param record
-    //  */
-    // getTimeFormat(time) {
-    //  DateUtil無法引入(martin)
-    //   return DateUtil.format(time, "MMMDo hh:mm:ssa");
-    // }
   }
 };
 </script>
