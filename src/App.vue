@@ -262,8 +262,8 @@ export default {
         others: true,
         myself: true,
         styles: {
-          width: "30px",
-          height: "30px",
+          width: "36px",
+          height: "36px",
           borderRadius: "50%"
         }
       },
