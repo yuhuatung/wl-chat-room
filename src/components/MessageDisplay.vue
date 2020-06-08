@@ -9,8 +9,8 @@
       <div class="message-loading"></div>
     </div>
 
-    <!-- <div *ngIf="!this.hasLog" class="center-text">无历史纪录</div>
-        <div *ngIf="this.hasLog" class="center-text cui-link-button" (click)="queryLog()">查询历史纪录
+    <!-- <div v-if="!this.hasLog" class="center-text">无历史纪录</div>
+        <div v-if="this.hasLog" class="center-text cui-link-button" @click="queryLog()">查询历史纪录
     </div>-->
 
     <!-- hasLog還需要改(martin) -->
@@ -30,12 +30,9 @@
           >
             <MyMessage
               v-if="$parent.getMessageClassName(record) === 'message right'"
-              :async-mode="asyncMode"
               :colors="colors"
               :profile-picture-config="profilePictureConfig"
-              :timestamp-config="timestampConfig"
               :showPortrait="showPortrait(record)"
-              :getMessageClassName="getMessageClassName(record)"
               :getPortrait="getPortrait(record)"
               :getMessageTime="getMessageTime(record)"
               :record="record"
@@ -43,16 +40,12 @@
               :getMessageName="getMessageName(record)"
               @download="download(record)"
               @onImageClicked="onImageClicked"
-              @getKnowledgeSolution="getKnowledgeSolution"
             />
             <OtherMessage
               v-if="$parent.getMessageClassName(record) === 'message left'"
-              :async-mode="asyncMode"
               :colors="colors"
               :profile-picture-config="profilePictureConfig"
-              :timestamp-config="timestampConfig"
               :showPortrait="showPortrait(record)"
-              :getMessageClassName="getMessageClassName(record)"
               :getPortrait="getPortrait(record)"
               :getMessageTime="getMessageTime(record)"
               :record="record"
@@ -64,7 +57,47 @@
             />
           </div>
         </template>
+        <div v-if="chat.endTime" class="center-text">本次对话已结束{{getTimeFormat(chat.endTime)}}</div>
+        <template v-if="scoring && currentChat.id == chat.id">
+          <template v-if="chat.score">
+            <div class="message score">
+              <div class="text">{{consultant.nickname}} 已得到{{chat.score}}分</div>
+            </div>
+          </template>
+          <div class="message score">
+            <div class="text">请对 {{consultant.nickname}} 的本次咨询服务打分</div>
+            <div class="loves">
+              <template v-for="(i,index) in scores">
+                <span
+                  :key="index"
+                  :class="chat.tempScore 
+                        ? i<=chat.tempScore?'flaticon-love love':'flaticon-unlove unlove'
+                        : i<=chat.score?'flaticon-love love':'flaticon-unlove unlove'"
+                  @click="changeScore(chat,i)"
+                ></span>
+              </template>
+            </div>
+            <div class="submit">
+              <button class="cui-button" @click="submitScore(chat)">提交</button>
+            </div>
+          </div>
+        </template>
       </template>
+    </template>
+    <template v-for="(record,index) in sendingRecords">
+      <FailMessage
+        :key="index"
+        :colors="colors"
+        :profile-picture-config="profilePictureConfig"
+        :showPortrait="showPortrait(record)"
+        :getPortrait="getPortrait(record)"
+        :record="record"
+        :getFileSize="getFileSize(record)"
+        :getMessageName="getMessageName(record)"
+        @download="download(record)"
+        @removeSendRecord="removeSendRecord(record)"
+        @reSend="reSend(record)"
+      />
     </template>
   </div>
 </template>
@@ -74,10 +107,12 @@ import { mapGetters, mapMutations } from "vuex";
 import { DateTime } from "luxon";
 import MyMessage from "./MyMessage.vue";
 import OtherMessage from "./OtherMessage.vue";
+import FailMessage from "./FailMessage.vue";
 export default {
   components: {
     MyMessage,
-    OtherMessage
+    OtherMessage,
+    FailMessage
   },
   props: {
     colors: {
@@ -121,12 +156,25 @@ export default {
       required: false,
       default: false
     },
+    scoring: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
     chatStorage: {
       type: Object,
       required: true
     },
     chatRecordStorage: {
       type: Object,
+      required: true
+    },
+    currentChat: {
+      type: Object,
+      required: true
+    },
+    sendingRecords: {
+      type: Array,
       required: true
     }
   },
@@ -257,7 +305,19 @@ export default {
       this.$emit("getKnowledgeSolution", id, problem);
     },
     isBotRecordEmpty(record) {
-      return this.$parent.isBotRecordEmpty(record)
+      return this.$parent.isBotRecordEmpty(record);
+    },
+    changeScore(chat, score) {
+      this.$emit("changeScore", chat, score);
+    },
+    submitScore(chat) {
+      this.$emit("submitScore", chat);
+    },
+    removeSendRecord(record) {
+      this.$emit("removeSendRecord", record);
+    },
+    reSend(record) {
+      this.$emit("reSend", record);
     }
   }
 };

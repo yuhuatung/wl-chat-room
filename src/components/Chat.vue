@@ -27,11 +27,18 @@
       :chatStorage="chatStorage"
       :chatRecordStorage="chatRecordStorage"
       :querying="querying"
+      :scoring="scoring"
+      :currentChat="currentChat"
+      :sendingRecords="sendingRecords"
       @onImageClicked="onImageClicked"
       @showPortrait="showPortrait"
       @getMessageClassName="getMessageClassName"
       @queryLog="queryLog"
       @getKnowledgeSolution="getKnowledgeSolution"
+      @changeScore="changeScore"
+      @submitScore="submitScore"
+      @removeSendRecord="removeSendRecord"
+      @reSend="reSend"
       ref="messages"
     />
     <MessageManager
@@ -256,8 +263,9 @@ export default {
       scrollTop: "",
       subProduct: {},
       chatTitle: "",
-      scrollDown:true,
-      sendingRecords:[]
+      scrollDown: true,
+      scoring: false,
+      currentChat: {}
     };
   },
   watch: {

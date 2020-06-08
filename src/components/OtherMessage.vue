@@ -1,6 +1,6 @@
 <template>
   <div class="other-message-body">
-    <div v-if="showPortrait" class="thum-container">
+    <div v-if="profilePictureConfig.others && showPortrait" class="thum-container">
       <img
         class="participant-thumb"
         :src="getPortrait"
@@ -108,11 +108,11 @@ export default {
     CheckAll
   },
   props: {
-    asyncMode: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
+    // asyncMode: {
+    //   type: Boolean,
+    //   required: false,
+    //   default: false
+    // },
     colors: {
       type: Object,
       required: true
@@ -126,19 +126,19 @@ export default {
       type: Object,
       required: true
     },
-    timestampConfig: {
-      type: Object,
-      required: true
-    },
+    // timestampConfig: {
+    //   type: Object,
+    //   required: true
+    // },
     showPortrait: {
       type: Boolean,
       required: false,
       default: false
     },
-    getMessageClassName: {
-      type: String,
-      required: false
-    },
+    // getMessageClassName: {
+    //   type: String,
+    //   required: false
+    // },
     getPortrait: {
       type: String,
       required: false

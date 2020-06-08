@@ -1,24 +1,12 @@
 <template>
   <div class="myself-message-body">
     <div class="message-content">
-      <!-- <template v-if="message.type == 'image'">
-                <p class="message-username-image">{{myself.name}}</p>
-                <div v-if="message.uploaded" class="message-image">
-                    <img class="message-image-display" :src="message.src" alt="" @click="onImageClicked(message)">
-                </div>
-                <div v-else class="message-image">
-                    <img class="message-image-display img-overlay" :src="message.preview" alt="">
-                    <div class="img-loading"></div>
-                </div>
-      </template>-->
       <template v-if="record">
-        <p class="message-username">
-          <span>{{getMessageTime}}</span>
-          {{getMessageName}}
-        </p>
+        <p class="message-username">{{getMessageName}}</p>
         <div
           class="message-text"
           :style="{background: colors.message.myself.bg, color: colors.message.myself.text}"
+          :class="record.fail?'fail':'lds-hourglass'"
         >
           <template v-if="record.dataType==ChatRecordDataType.TEXT">
             <p>{{record.data}}</p>
@@ -34,22 +22,6 @@
           </template>
         </div>
       </template>
-      <!-- <div class="message-timestamp" :style="{'justify-content': 'flex-end'}">
-        <template v-if="timestampConfig.relative">{{message.timestamp.toRelative()}}</template>
-        <template v-else>{{message.timestamp.toFormat(timestampConfig.format)}}</template>
-        <CheckIcon
-          v-if="asyncMode && message.uploaded && !message.viewed"
-          :size="14"
-          class="icon-sent"
-        />
-        <CheckAll
-          v-else-if="asyncMode && message.uploaded && message.viewed"
-          :size="14"
-          class="icon-sent viewed"
-        />
-        <div v-else-if="asyncMode" class="message-loading"></div>
-        {{getMessageTime}}
-      </div>-->
     </div>
     <div v-if="profilePictureConfig.myself && showPortrait" class="thum-container">
       <img
@@ -58,59 +30,35 @@
         :style="{'width': profilePictureConfig.styles.width, 'height': profilePictureConfig.styles.height, 'border-radius': profilePictureConfig.styles.borderRadius}"
       />
     </div>
+    <div class="text-tool" v-if="record.fail">
+      <span @click="removeSendRecord">移除</span>
+      <span @click="reSend">重传</span>
+    </div>
   </div>
 </template>
 
 <script>
-import CheckIcon from "vue-material-design-icons/Check";
-import CheckAll from "vue-material-design-icons/CheckAll";
 import { mapGetters, mapMutations } from "vuex";
 export default {
-  components: {
-    CheckIcon,
-    CheckAll
-  },
   props: {
-    // asyncMode: {
-    //   type: Boolean,
-    //   required: false,
-    //   default: false
-    // },
     colors: {
       type: Object,
       required: true
     },
-    /* onImageClicked: {
-                type: Function,
-                required: false,
-                default: null
-            }, */
     profilePictureConfig: {
       type: Object,
       required: true
     },
-    // timestampConfig: {
-    //   type: Object,
-    //   required: true
-    // },
     showPortrait: {
       type: Boolean,
       required: false,
       default: false
     },
-    // getMessageClassName: {
-    //   type: String,
-    //   required: false
-    // },
     getPortrait: {
       type: String,
       required: false
     },
     getMessageName: {
-      type: String,
-      required: false
-    },
-    getMessageTime: {
       type: String,
       required: false
     },
@@ -151,8 +99,11 @@ export default {
     ...mapGetters(["getParticipantById", "messages", "myself"])
   },
   methods: {
-    onImageClicked: function(message) {
-      this.$emit("onImageClicked", message);
+    removeSendRecord() {
+      this.$emit("removeSendRecord");
+    },
+    reSend() {
+      this.$emit("reSend",);
     }
   }
 };
@@ -219,6 +170,23 @@ export default {
     img,
     audio {
       max-width: 100%;
+    }
+    &.fail {
+      &:after {
+        content: "發送失敗";
+        color: #ff4081;
+        font-size: 14px;
+      }
+    }
+  }
+  .text-tool {
+    color: #aaa;
+    font-size: 80%;
+    cursor: pointer;
+    text-align: right;
+
+    span {
+      margin: 2px;
     }
   }
 }
