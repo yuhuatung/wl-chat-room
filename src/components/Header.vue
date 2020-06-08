@@ -15,7 +15,9 @@
         <!-- <button class="cui-button flaticon-close" (click)="close()"></button> -->
         <!-- </ng-container> -->
         <button class="cui-button" @click="showCustomerComplaint()">投诉</button>
-        <button class="cui-button flaticon-close" @click="close()"></button>
+        <template v-if="!currentChatClose">
+          <button class="cui-button flaticon-close" @click="close()"></button>
+        </template>
       </div>
     </div>
 
@@ -62,8 +64,13 @@ export default {
     },
     chatTitle: {
       type: String,
-      required: true,
+      required: false,
       default: "客服"
+    },
+    currentChatClose: {
+      type: Boolean,
+      required: false,
+      default: false
     }
     /* onClose: {
                 type: Function,

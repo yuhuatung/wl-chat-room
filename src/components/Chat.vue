@@ -9,6 +9,7 @@
       :hide-close-button="hideCloseButton"
       :close-button-icon-size="closeButtonIconSize"
       :chatTitle="chatTitle"
+      :currentChatClose="currentChatClose"
       @onClose="onClose()"
       @showCustomerComplaint="showCustomerComplaint"
       @close="close"
@@ -69,6 +70,7 @@ import store from "../store";
 /////////////////////////////////////////////////
 import { FileUtil } from "@/ts/util/file-util";
 import { DateUtil } from "@/ts/util/date-util";
+import { DownloadUtil } from '@/ts/util/download-util';
 import { NotifyService } from "@/ts/component/notify-service";
 import { ChatService } from "@/ts/service/chat-service";
 import { UserService } from "@/ts/service/user-service";
@@ -1125,7 +1127,7 @@ export default {
       let className = "message ";
       switch (record.sendType) {
         case ChatRecordSendType.SYSTEM:
-          className += "center system";
+          className += "left";
           break;
 
         case ChatRecordSendType.CONSULTANT:

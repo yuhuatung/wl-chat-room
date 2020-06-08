@@ -37,7 +37,9 @@
             <audio :src="record.url" controls></audio>
           </template>
           <template v-if="record.dataType==ChatRecordDataType.DOC">
-            <div></div>
+            <div class="file" @click="download(record)">
+              <span class="flaticon-file" v-text="record.data+'('+getFileSize+')'"></span>
+            </div>
           </template>
           <template v-if="record.dataType==ChatRecordDataType.ANNOUNCEMENT">
             <h2 v-text="record.announce.topic"></h2>
@@ -195,8 +197,11 @@ export default {
       this.$emit("getKnowledgeSolution", id, problem);
     },
     isBotRecordEmpty(record) {
-      return this.$parent.isBotRecordEmpty(record)
-    }
+      return this.$parent.isBotRecordEmpty(record);
+    },
+    download() {
+      this.$emit("download");
+    },
   }
 };
 </script>
@@ -261,6 +266,11 @@ export default {
     img,
     audio {
       max-width: 100%;
+    }
+    .file{
+      padding: 5px;
+      font-size: 14px;
+      cursor: pointer;
     }
   }
 }
