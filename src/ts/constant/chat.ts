@@ -66,7 +66,7 @@ export enum CustomerTypeEnum {
 }
 
 export const CustomerType = {
-    '1': '游客'
+    '1': '访客'
     , '2': '玩家'
     , '3': 'VIP'
 };
