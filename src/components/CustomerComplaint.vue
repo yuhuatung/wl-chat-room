@@ -23,7 +23,7 @@
           </div>
           </ng-container>-->
           <!-- <div class="upload-file" (click)="selectFile()"> -->
-          <div class="upload-file">
+          <div class="upload-file" @click="selectFile">
             <i class="flaticon-camera-1"></i>
             <label>
               上传凭证

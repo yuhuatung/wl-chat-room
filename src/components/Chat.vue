@@ -1406,7 +1406,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="scss" scoped>
 .quick-chat-container {
   display: flex;
   width: 100%;

@@ -206,7 +206,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="scss" scoped>
 .container-message-display .other-message-body {
   display: flex;
   // align-items: flex-end;
@@ -255,7 +255,8 @@ export default {
   .message-text {
     background: #fff;
     padding: 10px;
-    line-height: 14px;
+    font-size: 14px;
+    line-height: 28px;
     border-radius: 15px;
     margin: 5px 0 5px 0;
     overflow-wrap: break-word;
@@ -271,6 +272,33 @@ export default {
       padding: 5px;
       font-size: 14px;
       cursor: pointer;
+    }
+  }
+  .bot-msg {
+    .title {
+      // font-size: 1em;
+      font-weight: 700;
+      border-bottom: 1px solid #F2F2F2;
+      padding-bottom: 0.25rem;
+      font-size: 14px;
+      line-height: 28px;
+    }
+
+    .related-problems {
+      color: #4290FF;
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+      border-bottom: 1px solid #F2F2F2;
+    }
+
+    .related-problems:last-of-type {
+      border-bottom: unset;
+    }
+
+    .content {
+      .text {
+        border-top-left-radius: 0;
+      }
     }
   }
 }

@@ -109,7 +109,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="scss" scoped>
 .container-message-display .myself-message-body {
   display: flex;
   // align-items: flex-end;

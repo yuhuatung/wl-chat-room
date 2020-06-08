@@ -163,7 +163,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="scss" scoped>
 .container-message-display .myself-message-body {
   display: flex;
   // align-items: flex-end;
@@ -213,7 +213,7 @@ export default {
   .message-text {
     background: #fff;
     padding: 10px;
-    line-height: 14px;
+    line-height: 28px;
     border-radius: 15px;
     margin: 5px 0 5px 0;
     overflow-wrap: break-word;

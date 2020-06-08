@@ -323,7 +323,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="scss" scoped>
 .quick-chat-container .container-message-display {
   -webkit-box-flex: 1;
   -webkit-flex: 1;
