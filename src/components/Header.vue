@@ -15,7 +15,7 @@
         <!-- <button class="cui-button flaticon-close" (click)="close()"></button> -->
         <!-- </ng-container> -->
         <button class="cui-button" @click="showCustomerComplaint()">投诉</button>
-        <button class="cui-button flaticon-close"></button>
+        <button class="cui-button flaticon-close" @click="close()"></button>
       </div>
     </div>
 
@@ -62,7 +62,7 @@ export default {
     },
     chatTitle: {
       type: String,
-      required: false,
+      required: true,
       default: "客服"
     }
     /* onClose: {
@@ -90,7 +90,10 @@ export default {
       this.$emit("onClose");
     },
     showCustomerComplaint() {
-        this.$emit('showCustomerComplaint')
+      this.$emit("showCustomerComplaint");
+    },
+    close() {
+      this.$emit("close");
     }
   }
 };

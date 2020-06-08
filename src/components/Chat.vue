@@ -11,10 +11,11 @@
       :chatTitle="chatTitle"
       @onClose="onClose()"
       @showCustomerComplaint="showCustomerComplaint"
+      @close="close"
     >
-      <template #header>
+      <!-- <template #header>
         <slot name="header"></slot>
-      </template>
+      </template>-->
     </Header>
     <MessageDisplay
       :colors="colors"
@@ -265,7 +266,9 @@ export default {
       chatTitle: "",
       scrollDown: true,
       scoring: false,
-      currentChat: {}
+      currentChat: {},
+      currentChatClose: false,
+      sending: 0
     };
   },
   watch: {
@@ -1294,7 +1297,10 @@ export default {
       }
 
       this.appendFormat(record);
-      return storage.append(record);
+      let c = storage.append(record);
+      this.chatRecordStorage = Object.assign({},this.chatRecordStorage);
+      this.chatRecordStorage[record.chatId] = storage;
+      return c;
     },
 
     /**
