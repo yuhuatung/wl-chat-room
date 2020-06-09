@@ -1179,9 +1179,12 @@ export default {
               ")"
             );
           } else {
-            return (
-              CustomerType[this.customer.type] + "(" + this.customer.id + ")"
-            );
+            if(process.env.NODE_ENV == 'dev'){
+              return  CustomerType[this.customer.type] + "(" + this.customer.id + ")"
+            }
+            else{
+              return  CustomerType[this.customer.type]
+            }
           }
       }
       return "";
