@@ -416,7 +416,7 @@ export default {
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
-    margin-bottom: 10px;
+    margin: 10px 0;
   }
 
   .message-username {

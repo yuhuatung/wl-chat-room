@@ -59,7 +59,7 @@
     </div>
     <!-- pc顯示 -->
     <div class="chat-right">
-      <!-- <app-user></app-user> -->
+      <User :consultant="consultant" />
       <div>
         <button class="cui-button" @click="queryLog()">查詢歷史對話</button>
         <button
@@ -79,6 +79,7 @@
 import Header from "./Header.vue";
 import MessageDisplay from "./MessageDisplay.vue";
 import MessageManager from "./MessageManager.vue";
+import User from "./User.vue";
 import { mapMutations } from "vuex";
 import store from "../store";
 /////////////////////////////////////////////////
@@ -120,7 +121,8 @@ export default {
   components: {
     Header,
     MessageDisplay,
-    MessageManager
+    MessageManager,
+    User
   },
   props: {
     participants: {

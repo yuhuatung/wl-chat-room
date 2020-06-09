@@ -32,13 +32,17 @@
           </template>
           <template v-if="record.dataType==ChatRecordDataType.IMAGE">
             <!-- <img :src="record.url" alt /> -->
-            <img v-if="isMobile" v-gallery :src=record.url />
-            <viewer v-if="!isMobile" :images="images"
-                    @inited="inited"
-                    class="viewer" ref="viewer" @click="show"
+            <img v-if="isMobile" v-gallery :src="record.url" />
+            <viewer
+              v-if="!isMobile"
+              :images="images"
+              @inited="inited"
+              class="viewer"
+              ref="viewer"
+              @click="show"
             >
               <template slot-scope="scope">
-                <img v-for="src in scope.images" :src="src" :key="src">
+                <img v-for="src in scope.images" :src="src" :key="src" />
                 {{scope.options}}
               </template>
             </viewer>
@@ -114,17 +118,17 @@
 import CheckIcon from "vue-material-design-icons/Check";
 import CheckAll from "vue-material-design-icons/CheckAll";
 import { mapGetters, mapMutations } from "vuex";
-import 'viewerjs/dist/viewer.css'
-import Viewer from 'v-viewer'
-import Vue from 'vue'
-import gallery from 'img-vuer';
-Vue.use(Viewer)
+import "viewerjs/dist/viewer.css";
+import Viewer from "v-viewer";
+import Vue from "vue";
+import gallery from "img-vuer";
+Vue.use(Viewer);
 Vue.use(gallery, {
   swipeThreshold: 150, // default 100
   isIndexShow: false, // show image index, default true
   useCloseButton: true, // trigger gallery close with close button, default true
-  preload: true, // preload images in the same group, default true
-})
+  preload: true // preload images in the same group, default true
+});
 export default {
   components: {
     CheckIcon,
@@ -213,8 +217,8 @@ export default {
   },
   computed: {
     ...mapGetters(["getParticipantById", "messages", "myself"]),
-    images(){
-      return [this.record.url]
+    images() {
+      return [this.record.url];
     }
   },
   methods: {
@@ -230,11 +234,11 @@ export default {
     download() {
       this.$emit("download");
     },
-    inited (viewer) {
-      this.$viewer = viewer
+    inited(viewer) {
+      this.$viewer = viewer;
     },
-    show () {
-      this.$viewer.show()
+    show() {
+      this.$viewer.show();
     }
   }
 };
@@ -245,12 +249,10 @@ export default {
   display: flex;
   // align-items: flex-end;
   padding-left: 10px;
+  width: 100%;
 
   .message-content {
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    flex-direction: column;
+    text-align: left;
     width: 100%;
     .message-username {
       font-size: 0.8rem;
@@ -287,17 +289,17 @@ export default {
   }
 
   .message-text {
-    background: #fff;
-    padding: 10px;
-    font-size: 14px;
-    border-radius: 15px;
-    margin: 5px 0 5px 0;
-    overflow-wrap: break-word;
+    display: inline-block;
+    width: auto;
+    max-width: 90%;
+    padding: 0.63rem;
+    margin-top: 5px;
+    border-radius: 0.7rem;
+    border-top-right-radius: 0px;
+    font-size: 1.1em;
     text-align: left;
-    white-space: pre-wrap;
-    border-top-left-radius: 0px;
-    word-break: break-word;
-    max-width: 80%;
+    word-wrap: break-word;
+    word-break: break-all;
     p {
       line-height: 28px;
     }

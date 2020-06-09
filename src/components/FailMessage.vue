@@ -119,13 +119,11 @@ export default {
   // align-items: flex-end;
   padding-right: 10px;
   justify-content: flex-end;
-
+  width: 100%;
+  margin: 10px 0;
   .message-content {
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-start;
-    flex-direction: column;
-    max-width: 80%;
+    text-align: right;
+    width: 100%;
     .message-username {
       font-size: 0.8rem;
       font-weight: bold;
@@ -161,22 +159,19 @@ export default {
   }
 
   .message-text {
-    background: #fff;
-    padding: 10px;
-    border-radius: 15px;
-    margin: 5px 0 5px 0;
-    overflow-wrap: break-word;
-    white-space: pre-wrap;
+    display: inline-block;
+    width: auto;
+    max-width: 90%;
+    padding: 0.63rem;
+    margin-top: 5px;
+    border-radius: 0.7rem;
     border-top-right-radius: 0px;
-    word-break: break-word;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    font-size: 1.1em;
+    text-align: left;
+    word-wrap: break-word;
+    word-break: break-all;
     p {
-      display: inline-block;
       line-height: 28px;
-      max-width: unset;
-      text-align: left;
     }
     img,
     audio {
