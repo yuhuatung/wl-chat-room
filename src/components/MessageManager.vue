@@ -277,9 +277,13 @@ export default {
         this.$emit("onMessageSubmit", message);
         this.newMessage(message);
         this.text = "";
-        event.preventDefault()
+        if(event){
+          event.preventDefault()
+        }
       } else {
-        event.preventDefault()
+        if(event){
+          event.preventDefault()
+        }
       }
     },
     triggerResize() {
