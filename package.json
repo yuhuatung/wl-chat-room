@@ -30,8 +30,10 @@
     "@typescript-eslint/parser": "^3.1.0",
     "core-js": "^2.6.5",
     "emoji-mart-vue": "^2.6.6",
+    "img-vuer": "^0.19.2",
     "luxon": "^1.21.3",
     "moment": "^2.26.0",
+    "v-viewer": "^1.5.1",
     "vue": "^2.6.10",
     "vue-material-design-icons": "^4.4.0",
     "vuex": "^3.0.1"
