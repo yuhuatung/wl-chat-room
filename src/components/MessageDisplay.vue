@@ -38,6 +38,7 @@
               :record="record"
               :getFileSize="getFileSize(record)"
               :getMessageName="getMessageName(record)"
+              :isMobile="isMobile"
               @download="download(record)"
               @onImageClicked="onImageClicked"
             />
@@ -51,6 +52,7 @@
               :record="record"
               :getFileSize="getFileSize(record)"
               :getMessageName="getMessageName(record)"
+              :isMobile="isMobile"
               @download="download(record)"
               @onImageClicked="onImageClicked"
               @getKnowledgeSolution="getKnowledgeSolution"
@@ -187,7 +189,8 @@ export default {
       updateScroll: true,
       lastMessage: null,
       loading: false,
-      scores: [20, 40, 60, 80, 100]
+      scores: [20, 40, 60, 80, 100],
+      isMobile: false,
     };
   },
   computed: {
@@ -196,6 +199,17 @@ export default {
   mounted() {
     this.goToBottom();
     this.$refs.containerMessageDisplay.dispatchEvent(new CustomEvent("scroll"));
+    if( navigator.userAgent.match(/Android/i)
+        || navigator.userAgent.match(/webOS/i)
+        || navigator.userAgent.match(/iPhone/i)
+        || navigator.userAgent.match(/iPad/i)
+        || navigator.userAgent.match(/iPod/i)
+        || navigator.userAgent.match(/BlackBerry/i)
+        || navigator.userAgent.match(/Windows Phone/i)){
+        this.isMobile = true;
+      } else {
+        this.isMobile = false;
+      }
   },
   // updated() {
   //   if (

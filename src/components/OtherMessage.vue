@@ -31,7 +31,17 @@
             <p>{{record.data}}</p>
           </template>
           <template v-if="record.dataType==ChatRecordDataType.IMAGE">
-            <img :src="record.url" alt />
+            <!-- <img :src="record.url" alt /> -->
+            <img v-if="isMobile" v-gallery :src=record.url />
+            <viewer v-if="!isMobile" :images="images"
+                    @inited="inited"
+                    class="viewer" ref="viewer" @click="show"
+            >
+              <template slot-scope="scope">
+                <img v-for="src in scope.images" :src="src" :key="src">
+                {{scope.options}}
+              </template>
+            </viewer>
           </template>
           <template v-if="record.dataType==ChatRecordDataType.VOICE">
             <audio :src="record.url" controls></audio>
@@ -104,6 +114,17 @@
 import CheckIcon from "vue-material-design-icons/Check";
 import CheckAll from "vue-material-design-icons/CheckAll";
 import { mapGetters, mapMutations } from "vuex";
+import 'viewerjs/dist/viewer.css'
+import Viewer from 'v-viewer'
+import Vue from 'vue'
+import gallery from 'img-vuer';
+Vue.use(Viewer)
+Vue.use(gallery, {
+  swipeThreshold: 150, // default 100
+  isIndexShow: false, // show image index, default true
+  useCloseButton: true, // trigger gallery close with close button, default true
+  preload: true, // preload images in the same group, default true
+})
 export default {
   components: {
     CheckIcon,
@@ -160,6 +181,10 @@ export default {
     getFileSize: {
       type: String,
       required: false
+    },
+    isMobile: {
+      type: Boolean,
+      required: true
     }
   },
   data() {
@@ -187,7 +212,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["getParticipantById", "messages", "myself"])
+    ...mapGetters(["getParticipantById", "messages", "myself"]),
+    images(){
+      return [this.record.url]
+    }
   },
   methods: {
     onImageClicked: function(message) {
@@ -202,6 +230,12 @@ export default {
     download() {
       this.$emit("download");
     },
+    inited (viewer) {
+      this.$viewer = viewer
+    },
+    show () {
+      this.$viewer.show()
+    }
   }
 };
 </script>
