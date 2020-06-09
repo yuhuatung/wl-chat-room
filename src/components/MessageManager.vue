@@ -22,7 +22,7 @@
           (keyup)="typing()" id="clear"></textarea>-->
           <textarea-autosize placeholder="请输入消息..." rows="1" type="text" v-model="text" :min-height="20" :max-height="80"/>
           <!-- <div *ngIf="!isQQ" class="send-btn {{text?'has-text':''}}" (click)="send(); triggerResize()"> -->
-          <div class="send-btn" :class="text?'has-text':''" @click="send();triggerResize()">
+          <div class="send-btn" :class="text?'has-text':''" @click="send()">
             <div class="icon-send">发送</div>
           </div>
         </div>
@@ -95,11 +95,11 @@
         <div class="bottom-part">
           <!-- <textarea type="text" placeholder="请输入消息" [(ngModel)]="text" (keyup)="typing()" (keyup.enter)="send()">
           </textarea>-->
-          <textarea v-model="text" type="text" placeholder="请输入消息"></textarea>
+          <textarea v-model="text" type="text" placeholder="请输入消息" v-on:keydown.enter="send($event)"></textarea>
         </div>
       </div>
       <!-- <div class="send-btn {{text?'has-text':''}}" (click)="send()"> -->
-      <div class="send-btn" :class="text !== ''?'has-text':''" @click="send()">发送</div>
+      <div class="send-btn" :class="text !== ''?'has-text':''"  @click="send()">发送</div>
     </footer>
   </div>
 </template>
@@ -228,30 +228,6 @@ export default {
   },
   methods: {
     ...mapMutations(["newMessage"]),
-    sendMessage(e) {
-      this.textInput = this.$refs.userInput.textContent;
-      this.$refs.userInput.textContent = "";
-
-      if (this.textInput) {
-        let inputLen = this.textInput.length;
-        let inputText = this.textInput;
-        if (this.textInput[inputLen - 1] === "\n") {
-          inputText = inputText.slice(0, inputLen - 1);
-        }
-        let message = {
-          content: inputText,
-          // myself: true,
-          participantId: this.myself.id,
-          timestamp: DateTime.local(),
-          uploaded: false,
-          viewed: false,
-          type: "text"
-        };
-        this.$emit("onMessageSubmit", message);
-        //this.onMessageSubmit(message);
-        this.newMessage(message);
-      }
-    },
     handleType: function(e) {
       this.$emit("onType", e);
     },
@@ -281,9 +257,9 @@ export default {
       console.log(e.native);
       console.log(FileUtil.getFileSize("1025"));
     },
-    send() {
-      this.$emit("send", this.text);
+    send(event) {
       if (this.text) {
+        this.$emit("send", this.text);
         let inputLen = this.text.length;
         let inputText = this.text;
         if (this.text[inputLen - 1] === "\n") {
@@ -301,6 +277,9 @@ export default {
         this.$emit("onMessageSubmit", message);
         this.newMessage(message);
         this.text = "";
+        event.preventDefault()
+      } else {
+        event.preventDefault()
       }
     },
     triggerResize() {
