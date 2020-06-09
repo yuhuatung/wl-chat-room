@@ -32,12 +32,12 @@
       :scoring="scoring"
       :currentChat="currentChat"
       :sendingRecords="sendingRecords"
+      :consultant="consultant"
       @onImageClicked="onImageClicked"
       @showPortrait="showPortrait"
       @getMessageClassName="getMessageClassName"
       @queryLog="queryLog"
       @getKnowledgeSolution="getKnowledgeSolution"
-      @changeScore="changeScore"
       @submitScore="submitScore"
       @removeSendRecord="removeSendRecord"
       @reSend="reSend"
@@ -57,6 +57,7 @@
       @selectImage="selectImage"
       @selectFile="selectFile"
       @getMessageClassName="getMessageClassName"
+      @score="score"
     />
   </div>
 </template>
@@ -270,7 +271,7 @@ export default {
       scoring: false,
       currentChat: {},
       currentChatClose: false,
-      sending: 0
+      sending: 0,
     };
   },
   watch: {
@@ -992,12 +993,6 @@ export default {
       this.doScrollTop();
     },
 
-    /**
-     * 選擇分數
-     */
-    changeScore(chat, score) {
-      chat.tempScore = score;
-    },
 
     /**
      * 提交評估分數

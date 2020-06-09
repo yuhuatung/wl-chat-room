@@ -60,11 +60,11 @@
         <div v-if="chat.endTime" class="center-text">本次对话已结束{{getTimeFormat(chat.endTime)}}</div>
         <template v-if="scoring && currentChat.id == chat.id">
           <template v-if="chat.score">
-            <div class="message score">
+            <div class="message-score">
               <div class="text">{{consultant.nickname}} 已得到{{chat.score}}分</div>
             </div>
           </template>
-          <div class="message score">
+          <div class="message-score">
             <div class="text">请对 {{consultant.nickname}} 的本次咨询服务打分</div>
             <div class="loves">
               <template v-for="(i,index) in scores">
@@ -176,13 +176,18 @@ export default {
     sendingRecords: {
       type: Array,
       required: true
+    },
+    consultant: {
+      type: Object,
+      required: true
     }
   },
   data() {
     return {
       updateScroll: true,
       lastMessage: null,
-      loading: false
+      loading: false,
+      scores: [20, 40, 60, 80, 100]
     };
   },
   computed: {
@@ -308,7 +313,7 @@ export default {
       return this.$parent.isBotRecordEmpty(record);
     },
     changeScore(chat, score) {
-      this.$emit("changeScore", chat, score);
+      this.$set(chat, "tempScore", score);
     },
     submitScore(chat) {
       this.$emit("submitScore", chat);
@@ -469,6 +474,51 @@ export default {
     cursor: pointer;
     -webkit-text-decoration-line: underline;
     text-decoration-line: underline;
+  }
+  .message-score {
+    width: 100%;
+    line-height: 2em;
+    padding: 1em 0.5em;
+    .text {
+      padding: 5px;
+      overflow: hidden;
+      word-break: break-word;
+      text-align: center;
+    }
+    .loves {
+      text-align: center;
+      font-size: 2em;
+      color: #ff4081;
+      span {
+        margin: 0.1em;
+        cursor: pointer;
+      }
+    }
+    .submit {
+      text-align: center;
+      cursor: pointer;
+      .cui-button {
+        padding: 0.5em 1em;
+        margin: 5px;
+        border: 0;
+        border-radius: 2px;
+        letter-spacing: 1px;
+        background-color: #2196f3;
+        color: #fff;
+        text-transform: none;
+        font-size: 80%;
+        font-family: inherit;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        touch-action: manipulation;
+        cursor: pointer;
+        -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12),
+          0 1px 4px rgba(0, 0, 0, 0.24);
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.24);
+      }
+    }
   }
 }
 
