@@ -1,32 +1,14 @@
 <template>
   <div class="header-container" :style="{background: colors.header.bg}">
-    <!-- <slot name="header" :colors="colors" :chatTitle="chatTitle"
-              :participants="participants"
-    :myself="myself"></slot>-->
     <div v-if="!hasHeaderSlot" class="header-title">
       <p class="header-title-text" :style="{color: colors.header.text}">{{chatTitle}}</p>
-      <!-- <p class="header-paticipants-text">
-                <span>{{myself.name}}, </span>
-                <span v-for="(participant, index) in participants" :key="participant.id">{{participant.name}}{{participants.length - index - 1 ? ', ' : ''}}</span>
-      </p>-->
       <div class="top-bar-tool">
-        <!-- <button class="cui-button" *ngIf="!this.consultant||this.consultant.type!=2" (click)="openComplaint()">投诉</button> -->
-        <!-- <ng-container *ngIf="!currentChatClose"> -->
-        <!-- <button class="cui-button flaticon-close" (click)="close()"></button> -->
-        <!-- </ng-container> -->
-        <button class="cui-button" @click="showCustomerComplaint()">投诉</button>
+        <button v-if="!consultant||consultant.type!=2" class="cui-button" @click="showCustomerComplaint()">投诉</button>
         <template v-if="!currentChatClose">
           <button class="cui-button flaticon-close" @click="close()"></button>
         </template>
       </div>
     </div>
-
-    <!-- <div v-if="!hideCloseButton && !hasHeaderSlot" class="header-exit">
-            <slot name="close-button">
-                <a class="header-exit-button" href="#" :style="{fontSize: closeButtonIconSize}"
-                   @click.prevent="onClose">✕</a>
-            </slot>
-    </div>-->
   </div>
 </template>
 
@@ -52,16 +34,6 @@ export default {
         };
       }
     },
-    hideCloseButton: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    closeButtonIconSize: {
-      type: String,
-      required: false,
-      default: "15px"
-    },
     chatTitle: {
       type: String,
       required: false,
@@ -78,6 +50,19 @@ export default {
                 default: () => false
             } */
   },
+  data() {
+    return {
+      consultant: {}
+    };
+  },
+  mounted() {
+    this.bus.$on("consultant", $event => {
+      this.consultant = $event;
+    });
+  },
+  beforeDestroy() {
+    this.bus.$off("consultant");
+  },
   computed: {
     participants() {
       return this.$store.state.participants;
@@ -85,17 +70,14 @@ export default {
     myself() {
       return this.$store.state.myself;
     },
-    // chatTitle() {
-    //   return this.$store.state.chatTitle;
-    // },
     hasHeaderSlot: function() {
       return !!this.$slots["header"];
     }
   },
   methods: {
-    onClose: function() {
-      this.$emit("onClose");
-    },
+    // onClose: function() {
+    //   this.$emit("onClose");
+    // },
     showCustomerComplaint() {
       this.$emit("showCustomerComplaint");
     },
@@ -125,13 +107,13 @@ export default {
   .top-bar-tool {
     position: absolute;
     right: 0;
+    display: flex;
     .cui-button {
       // float: right;
       background-color: #fff;
       color: #000;
       box-shadow: unset;
       padding: 0;
-      margin: 0;
       font-size: 0.8em;
       margin-left: 0.5em;
       border: 0px;
@@ -146,6 +128,9 @@ export default {
       &::before {
         font-size: 0.7em;
       }
+    }
+    .flaticon-close{
+      margin-bottom: .2rem;
     }
   }
   .header-title-text {

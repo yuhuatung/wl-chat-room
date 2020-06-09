@@ -5,12 +5,8 @@
     <Header
       v-if="displayHeader"
       :colors="colors"
-      :border-style="borderStyle"
-      :hide-close-button="hideCloseButton"
-      :close-button-icon-size="closeButtonIconSize"
       :chatTitle="chatTitle"
       :currentChatClose="currentChatClose"
-      @onClose="onClose()"
       @showCustomerComplaint="showCustomerComplaint"
       @close="close"
     >
