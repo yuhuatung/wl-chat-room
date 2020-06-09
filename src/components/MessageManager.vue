@@ -20,7 +20,7 @@
           <!-- <textarea matInput placeholder="请输入消息..." cdkTextareaAutosize cdkAutosizeMinRows="1"
                 cdkAutosizeMaxRows="5" #autosize="cdkTextareaAutosize" type="text" [(ngModel)]="text"
           (keyup)="typing()" id="clear"></textarea>-->
-          <textarea placeholder="请输入消息..." type="text" id="clear" v-model="text"></textarea>
+          <textarea-autosize placeholder="请输入消息..." rows="1" type="text" v-model="text" :min-height="20" :max-height="80"/>
           <!-- <div *ngIf="!isQQ" class="send-btn {{text?'has-text':''}}" (click)="send(); triggerResize()"> -->
           <div class="send-btn" :class="text?'has-text':''" @click="send();triggerResize()">
             <div class="icon-send">发送</div>
@@ -111,7 +111,9 @@ import { DateTime } from "luxon";
 import SendIcon from "vue-material-design-icons/Send";
 import ImageIcon from "vue-material-design-icons/Image";
 import { Picker } from "emoji-mart-vue";
-
+import Vue from 'vue';
+import TextareaAutosize from 'vue-textarea-autosize';
+Vue.use(TextareaAutosize)
 export default {
   components: {
     SendIcon,
@@ -433,6 +435,7 @@ export default {
         border-radius: 5rem;
         width: 100%;
         padding: 0.5rem 1.25rem;
+        padding-right: 3.5rem;
         overflow-y: hidden;
         resize: none;
         height: 2.5rem;
