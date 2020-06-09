@@ -45,17 +45,16 @@
           <span tooltip="上传挡案" class="icon"></span>
           <p>档案</p>
         </div>
-        <div class="emoji" @click="showEmoji.mobile=!showEmoji.mobile">
-          <i class="flaticon-smile">
-            <picker
-              v-show="showEmoji.mobile"
-              @select="addEmoji"
-              title="表情符号"
-              :i18n="i18n"
-              :style="emojiStyle.mobile"
-            />
-          </i>
-          <p>表情</p>
+        <div class="emoji">
+          <i class="flaticon-smile" @click="showEmoji.mobile= !showEmoji.mobile"></i>
+          <p @click="showEmoji.mobile= !showEmoji.mobile">表情</p>
+          <picker
+            v-show="showEmoji.mobile"
+            @select="addEmoji"
+            title="表情符号"
+            :i18n="i18n"
+            :style="emojiStyle.mobile"
+          />
         </div>
         <!-- <div *ngIf="!this.consultant||this.consultant.type!=2" (click)="score()"> -->
         <div v-if="!this.consultant||this.consultant.type!=2" @click="score()">
@@ -78,15 +77,14 @@
             <span tooltip="上传挡案" class="icon"></span>
           </div>
           <div class="emoji">
-            <i class="flaticon-smile" @click="showEmoji.pc=!showEmoji.pc">
-              <picker
-                v-show="showEmoji.pc"
-                title="表情符号"
-                @select="addEmoji"
-                :i18n="i18n"
-                :style="emojiStyle.pc"
-              />
-            </i>
+            <i class="flaticon-smile" @click="showEmoji.pc=!showEmoji.pc"></i>
+            <picker
+              v-show="showEmoji.pc"
+              title="表情符号"
+              @select="addEmoji"
+              :i18n="i18n"
+              :style="emojiStyle.pc"
+            />
           </div>
           <!-- <div *ngIf="!this.consultant||this.consultant.type!=2" (click)="score()"> -->
           <div v-if="!this.consultant||this.consultant.type!=2" @click="score()">
@@ -276,11 +274,13 @@ export default {
     },
     addEmoji(e) {
       this.text += e.native;
+      this.showEmoji.mobile = false;
+      this.showEmoji.pc = false;
       console.log(e.native);
       console.log(FileUtil.getFileSize("1025"));
     },
     send() {
-      this.$emit("send",this.text);
+      this.$emit("send", this.text);
       if (this.text) {
         let inputLen = this.text.length;
         let inputText = this.text;
@@ -298,7 +298,7 @@ export default {
         };
         this.$emit("onMessageSubmit", message);
         this.newMessage(message);
-        this.text = '';
+        this.text = "";
       }
     },
     triggerResize() {
@@ -312,6 +312,9 @@ export default {
     },
     showMore() {
       this.show = !this.show;
+    },
+    score() {
+      this.$emit("score");
     }
   }
 };
