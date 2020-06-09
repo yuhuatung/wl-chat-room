@@ -5,24 +5,20 @@
         <i class="flaticon-prev" @click="closeCustomerComplaint()"></i>
         <p>投訴客服</p>
       </header>
-      <div class="user-content">
-        <!-- <img class="user-icon" src="{{icon}}" /> -->
-        <img class="user-icon" />
-        <!-- <div class="user-name">您正在投诉客服 {{nickName}}...</div> -->
-        <div class="user-name">您正在投诉客服 ...</div>
+      <div class="user-content" v-if="consultant.added">
+        <img class="user-icon" :src="consultant.added.icon" />
+        <div class="user-name">您正在投诉客服 {{consultant.nickname}}...</div>
       </div>
 
       <div class="opinion">
-        <!-- <textarea placeholder="请输入您的投訴原因" [(ngModel)]="form.content"></textarea> -->
-        <textarea placeholder="请输入您的投訴原因" v-model="content"></textarea>
+        <textarea placeholder="请输入您的投訴原因" v-model="form.content"></textarea>
         <div class="upload-containar">
-          <!-- <ng-container *ngIf="form.files && form.files.length > 0">
-          <div class="file-content" *ngFor="let file of form.files">
-            <img class="file-img" [src]=" getImageUrl(file) | safeUrl" />
-            <span tooltip="移除文件" class="flaticon-close file-span" (click)="removeFile(file)"></span>
-          </div>
-          </ng-container>-->
-          <!-- <div class="upload-file" (click)="selectFile()"> -->
+          <template v-if="form.files && form.files.length > 0">
+            <div class="file-content" v-for="file in form.files">
+              <img class="file-img" :src=" getImageUrl(file)" />
+              <span tooltip="移除文件" class="flaticon-close file-span" @click="removeFile(file)"></span>
+            </div>
+          </template>
           <div class="upload-file" @click="selectFile">
             <i class="flaticon-camera-1"></i>
             <label>
@@ -37,27 +33,23 @@
         <div class="icon-box flaticon-wechat">
           <i></i>
         </div>
-        <!-- <input placeholder="请输入您的微信号" type="text" [(ngModel)]="form.weChat" /> -->
-        <input placeholder="请输入您的微信号" type="text" v-model="weChat"/>
+        <input placeholder="请输入您的微信号" type="text" v-model="form.weChat" />
       </div>
 
       <div class="data-form">
         <div class="icon-box flaticon-qq">
           <i></i>
         </div>
-        <!-- <input placeholder="请输入您的qq号" type="text" [(ngModel)]="form.qq" /> -->
-        <input placeholder="请输入您的qq号" type="text" v-model="qq"/>
+        <input placeholder="请输入您的qq号" type="text" v-model="form.qq" />
       </div>
 
       <div class="data-form">
         <div class="icon-box flaticon-phone">
           <i></i>
         </div>
-        <!-- <input placeholder="请输入您的手機号" type="text" [(ngModel)]="form.phone" /> -->
-        <input placeholder="请输入您的手機号" type="text" v-model="phone"/>
+        <input placeholder="请输入您的手機号" type="text" v-model="form.phone" />
       </div>
 
-      <!-- <div class="submit-btn" (click)="save()">提交</div> -->
       <div class="submit-btn" @click="save">提交</div>
     </div>
   </div>
@@ -66,36 +58,42 @@
 <script>
 import { ChatService } from "@/ts/service/chat-service";
 import { AjaxUtil } from "@/ts/lib/cui/core/ajax/ajax-util";
-import { Image } from '@/ts/constant/img';
+import { Image } from "@/ts/constant/img";
 export default {
   data() {
     return {
-      content:'',
-      weChat: '',
-      qq: '',
-      phone: '',
       form: {
-        content: '',
-        weChat: '',
-        qq: '',
-        phone: '',
-        skype: '',
+        content: "",
+        weChat: "",
+        qq: "",
+        phone: "",
+        skype: "",
         files: []
       },
+      nickName: "",
+      icon: "",
+      userId: 0,
+      fileElement: null,
+      maxFileSize: 5 /**文件大小不超过5M*/,
+      fileCount: 9 /**文件數量不超过9個*/,
+      consultant: {}
     };
   },
   mounted() {
-    this.fileElement = document.createElement('input');
-    this.fileElement.accept = 'image/*';
-    this.fileElement.type = 'file';
+    this.fileElement = document.createElement("input");
+    this.fileElement.accept = "image/*";
+    this.fileElement.type = "file";
     this.fileElement.multiple = true;
-    this.fileElement.addEventListener('change', this.addFile);
+    this.fileElement.addEventListener("change", this.addFile);
+    this.bus.$on("consultant", $event => {
+      this.consultant = $event;
+    });
   },
   methods: {
     closeCustomerComplaint() {
       this.$emit("showCustomerComplaint", false, "slideRight");
     },
-    // public open(user: Consultant) {
+    // open(user) {
     //   if (!this.userId || this.userId !== user.id) {
     //     if (user.added.icon) {
     //       this.icon = user.added.icon;
@@ -107,7 +105,7 @@ export default {
     //     this.initForm();
     //   }
     //   this.dialog.open();
-    // }
+    // },
     save() {
       ChatService.complaint(this.form, this.callback);
     },
@@ -123,13 +121,12 @@ export default {
     },
 
     initForm() {
-      this.form =
-      {
-        content: '',
-        weChat: '',
-        qq: '',
-        phone: '',
-        skype: '',
+      this.form = {
+        content: "",
+        weChat: "",
+        qq: "",
+        phone: "",
+        skype: "",
         files: []
       };
     },
@@ -141,28 +138,26 @@ export default {
         let index = this.form.files.indexOf(file);
         if (index > -1) {
           this.form.files.splice(index, 1);
-          this.cdf.markForCheck();
         }
       }
     },
-    getImageUrl(file){
+    getImageUrl(file) {
       if (file) {
         return URL.createObjectURL(file);
       }
-      return '';
+      return "";
     },
     addFile() {
       let uploadfileCount = this.form.files.length;
       let tempfileCount = this.fileElement.files.length;
-      if ((uploadfileCount + tempfileCount) > this.fileCount) {
-        alert('文件数量不超过9个');
+      if (uploadfileCount + tempfileCount > this.fileCount) {
+        alert("文件数量不超过9个");
         return;
       }
 
       let waringMsg = [];
 
       if (this.fileElement.files.length > 0) {
-
         let tempFiles = this.fileElement.files;
 
         for (let i = 0; i < tempFiles.length; i++) {
@@ -177,11 +172,11 @@ export default {
         }
 
         if (waringMsg.length > 0) {
-          alert(waringMsg + '  单个文件大小不超过5M');
+          alert(waringMsg + "  单个文件大小不超过5M");
         }
         // this.cdf.markForCheck();
       }
-      this.fileElement.value = '';
+      this.fileElement.value = "";
     }
   }
 };
@@ -270,15 +265,16 @@ export default {
           }
           span {
             position: absolute;
-            top: -0.8em;
-            right: -0.8em;
-            width: 2em;
-            height: 2em;
-            line-height: 2em;
+            top: -0.7rem;
+            right: -0.7rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            line-height: 1.5rem;
             background-color: rgba(0, 0, 0, 0.6);
             border-radius: 50%;
             text-align: center;
             color: white;
+            font-size: 0.5rem;
           }
         }
         .upload-file {

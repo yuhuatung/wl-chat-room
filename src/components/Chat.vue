@@ -71,7 +71,7 @@ import store from "../store";
 /////////////////////////////////////////////////
 import { FileUtil } from "@/ts/util/file-util";
 import { DateUtil } from "@/ts/util/date-util";
-import { DownloadUtil } from '@/ts/util/download-util';
+import { DownloadUtil } from "@/ts/util/download-util";
 import { NotifyService } from "@/ts/component/notify-service";
 import { ChatService } from "@/ts/service/chat-service";
 import { UserService } from "@/ts/service/user-service";
@@ -271,7 +271,7 @@ export default {
       scoring: false,
       currentChat: {},
       currentChatClose: false,
-      sending: 0,
+      sending: 0
     };
   },
   watch: {
@@ -328,9 +328,10 @@ export default {
         this.appendLastChatRecord(result.added.records);
         this.init();
         // this.cdf.markForCheck();
+        this.bus.$emit("consultant", this.consultant);
       } else {
-        // alert(result.message);
-        // window.close();
+        alert(result.message);
+        window.close();
       }
       Global.loader.close();
     });
@@ -993,7 +994,6 @@ export default {
       this.doScrollTop();
     },
 
-
     /**
      * 提交評估分數
      * @param record
@@ -1298,7 +1298,7 @@ export default {
 
       this.appendFormat(record);
       let c = storage.append(record);
-      this.chatRecordStorage = Object.assign({},this.chatRecordStorage);
+      this.chatRecordStorage = Object.assign({}, this.chatRecordStorage);
       this.chatRecordStorage[record.chatId] = storage;
       return c;
     },
