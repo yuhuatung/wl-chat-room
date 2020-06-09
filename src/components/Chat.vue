@@ -1,7 +1,11 @@
 <template>
   <!-- <div class="quick-chat-container"
   :style="{'border-bottom-left-radius': borderStyle.bottomLeft, 'border-bottom-right-radius': borderStyle.bottomRight, 'border-top-right-radius': borderStyle.topRight, 'border-top-left-radius': borderStyle.topLeft}">-->
-  <div class="quick-chat-container">
+  <div
+    :style="{width:'100%',height:'100%',display:'flex',
+    flexDirection:'row',
+    flexWrap:'wrap'}"
+  >
     <Header
       v-if="displayHeader"
       :colors="colors"
@@ -9,52 +13,65 @@
       :currentChatClose="currentChatClose"
       @showCustomerComplaint="showCustomerComplaint"
       @close="close"
-    >
-      <!-- <template #header>
-        <slot name="header"></slot>
-      </template>-->
-    </Header>
-    <MessageDisplay
-      :colors="colors"
-      :async-mode="asyncMode"
-      :load-more-messages="loadMoreMessages"
-      :scroll-bottom="scrollBottom"
-      :profile-picture-config="profilePictureConfig"
-      :timestamp-config="timestampConfig"
-      :hasLog="hasLog"
-      :chatStorage="chatStorage"
-      :chatRecordStorage="chatRecordStorage"
-      :querying="querying"
-      :scoring="scoring"
-      :currentChat="currentChat"
-      :sendingRecords="sendingRecords"
-      :consultant="consultant"
-      @onImageClicked="onImageClicked"
-      @showPortrait="showPortrait"
-      @getMessageClassName="getMessageClassName"
-      @queryLog="queryLog"
-      @getKnowledgeSolution="getKnowledgeSolution"
-      @submitScore="submitScore"
-      @removeSendRecord="removeSendRecord"
-      @reSend="reSend"
-      ref="messages"
-    />
-    <MessageManager
-      :colors="colors"
-      :border-style="borderStyle"
-      :submit-icon-size="submitIconSize"
-      :submit-image-icon-size="submitImageIconSize"
-      :send-images="sendImages"
-      :consultant="consultant"
-      @onImageSelected="onImageSelected"
-      @onMessageSubmit="onMessageSubmit"
-      @onType="onType"
-      @send="send"
-      @selectImage="selectImage"
-      @selectFile="selectFile"
-      @getMessageClassName="getMessageClassName"
-      @score="score"
-    />
+    ></Header>
+    <div class="quick-chat-container">
+      <MessageDisplay
+        :colors="colors"
+        :async-mode="asyncMode"
+        :load-more-messages="loadMoreMessages"
+        :scroll-bottom="scrollBottom"
+        :profile-picture-config="profilePictureConfig"
+        :timestamp-config="timestampConfig"
+        :hasLog="hasLog"
+        :chatStorage="chatStorage"
+        :chatRecordStorage="chatRecordStorage"
+        :querying="querying"
+        :scoring="scoring"
+        :currentChat="currentChat"
+        :sendingRecords="sendingRecords"
+        :consultant="consultant"
+        @onImageClicked="onImageClicked"
+        @showPortrait="showPortrait"
+        @getMessageClassName="getMessageClassName"
+        @queryLog="queryLog"
+        @getKnowledgeSolution="getKnowledgeSolution"
+        @submitScore="submitScore"
+        @removeSendRecord="removeSendRecord"
+        @reSend="reSend"
+        ref="messages"
+      />
+      <MessageManager
+        :colors="colors"
+        :border-style="borderStyle"
+        :submit-icon-size="submitIconSize"
+        :submit-image-icon-size="submitImageIconSize"
+        :send-images="sendImages"
+        :consultant="consultant"
+        @onImageSelected="onImageSelected"
+        @onMessageSubmit="onMessageSubmit"
+        @onType="onType"
+        @send="send"
+        @selectImage="selectImage"
+        @selectFile="selectFile"
+        @getMessageClassName="getMessageClassName"
+        @score="score"
+      />
+    </div>
+    <!-- pc顯示 -->
+    <div class="chat-right">
+      <!-- <app-user></app-user> -->
+      <div>
+        <button class="cui-button" @click="queryLog()">查詢歷史對話</button>
+        <button
+          class="cui-button"
+          v-if="!consultant||consultant.type!=2"
+          @click="showCustomerComplaint"
+        >投诉</button>
+        <template v-if="!currentChatClose">
+          <button class="cui-button" @click="close()">結束對話</button>
+        </template>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -1175,11 +1192,12 @@ export default {
               ")"
             );
           } else {
-            if(process.env.NODE_ENV == 'dev'){
-              return  CustomerType[this.customer.type] + "(" + this.customer.id + ")"
-            }
-            else{
-              return  CustomerType[this.customer.type]
+            if (process.env.NODE_ENV == "dev") {
+              return (
+                CustomerType[this.customer.type] + "(" + this.customer.id + ")"
+              );
+            } else {
+              return CustomerType[this.customer.type];
             }
           }
       }
@@ -1404,10 +1422,48 @@ export default {
 .quick-chat-container {
   display: flex;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 2.78rem);
   background: #f0eeee;
   flex-direction: column;
   align-items: stretch;
   overflow: hidden;
+}
+.chat-right {
+  flex: none;
+  width: 20%;
+  height: auto;
+  background-color: #fff;
+  text-align: center;
+  border-left: 1px solid #E7E6E9;
+  .cui-button {
+    background-color: #fff;
+    color: rgba(66, 144, 255, 1);
+    box-shadow: unset;
+    padding: 0;
+    margin: 0;
+    font-size: 1.25em;
+    border: 1px solid rgba(66, 144, 255, 1);
+    font-weight: 500;
+    line-height: 20px;
+    padding: 4px 10px;
+    margin-left: 1em;
+    margin-bottom: 1em;
+  }
+}
+/* desktops */
+@media screen and (min-width: 767.98px) {
+  .quick-chat-container{
+    width: 80%;
+  }
+  .chat-right {
+    display: block;
+  }
+}
+
+/* phones */
+@media screen and (max-width: 767.98px) {
+  .chat-right {
+    display: none;
+  }
 }
 </style>
