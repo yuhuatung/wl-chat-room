@@ -8,12 +8,6 @@
     <div v-if="querying" class="loader">
       <div class="message-loading"></div>
     </div>
-
-    <!-- <div v-if="!this.hasLog" class="center-text">无历史纪录</div>
-        <div v-if="this.hasLog" class="center-text cui-link-button" @click="queryLog()">查询历史纪录
-    </div>-->
-
-    <!-- hasLog還需要改(martin) -->
     <div v-if="!hasLog" class="center-text">无历史纪录</div>
     <div v-if="hasLog" class="center-text cui-link-button" @click="queryLog">查询历史纪录</div>
     <template v-if="chatStorage">

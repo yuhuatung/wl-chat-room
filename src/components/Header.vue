@@ -1,9 +1,13 @@
 <template>
-  <div class="header-container" :style="{background: colors.header.bg}">
+  <div class="header-container">
     <div v-if="!hasHeaderSlot" class="header-title">
       <p class="header-title-text" :style="{color: colors.header.text}">{{chatTitle}}</p>
       <div class="top-bar-tool">
-        <button v-if="!consultant||consultant.type!=2" class="cui-button" @click="showCustomerComplaint()">投诉</button>
+        <button
+          v-if="!consultant||consultant.type!=2"
+          class="cui-button"
+          @click="showCustomerComplaint()"
+        >投诉</button>
         <template v-if="!currentChatClose">
           <button class="cui-button flaticon-close" @click="close()"></button>
         </template>
@@ -21,18 +25,6 @@ export default {
     colors: {
       type: Object,
       required: true
-    },
-    borderStyle: {
-      type: Object,
-      required: false,
-      default: () => {
-        return {
-          topLeft: "10px",
-          topRight: "10px",
-          bottomLeft: "10px",
-          bottomRight: "10px"
-        };
-      }
     },
     chatTitle: {
       type: String,
@@ -88,13 +80,14 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.quick-chat-container .header-container {
-  padding: 0.8rem;
+<style lang="scss" scoped>
+.header-container {
   width: 100%;
-  // height: 2.78rem;
+  height: 2.78rem;
+  line-height: 2.78rem;
   z-index: 5;
-
+  padding: 0 0.8rem;
+  background-color: #fff;
   .header-title {
     // padding: 10px;
     display: flex;
@@ -129,8 +122,8 @@ export default {
         font-size: 0.7em;
       }
     }
-    .flaticon-close{
-      margin-bottom: .2rem;
+    .flaticon-close {
+      margin-bottom: 0.2rem;
     }
   }
   .header-title-text {
@@ -160,4 +153,15 @@ export default {
     color: rgb(238, 121, 121);
   }
 }
+/* desktops */
+@media screen and (min-width: 767.98px) {
+  .header-container {
+    background-color: #4d8ff8;
+    color: #fff;
+    .top-bar-tool{
+      display: none;
+    }
+  }
+}
+
 </style>

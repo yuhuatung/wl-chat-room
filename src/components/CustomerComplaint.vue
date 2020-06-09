@@ -89,6 +89,9 @@ export default {
       this.consultant = $event;
     });
   },
+  beforeDestroy(){
+    this.bus.$off("consultant")
+  },
   methods: {
     closeCustomerComplaint() {
       this.$emit("showCustomerComplaint", false, "slideRight");
@@ -287,13 +290,16 @@ export default {
           color: rgba(153, 153, 153, 1);
           // position: absolute;
           // bottom: .8rem;
-          float: left;
-          text-align: center;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
           margin-top: 1rem;
           i {
             display: block;
             font-size: 1.6rem;
-            margin-top: 0.3125rem;
+          }
+          label{
+            font-size: .8rem;
           }
         }
       }

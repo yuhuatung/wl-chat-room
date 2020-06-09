@@ -247,7 +247,6 @@ export default {
   .message-text {
     background: #fff;
     padding: 10px;
-    line-height: 28px;
     border-radius: 15px;
     margin: 5px 0 5px 0;
     overflow-wrap: break-word;
@@ -255,9 +254,14 @@ export default {
     white-space: pre-wrap;
     border-top-right-radius: 0px;
     word-break: break-word;
+    
+    p{
+      line-height: 28px;
+    }
     img,
     audio {
       max-width: 100%;
+      margin: auto;
     }
     .file{
       padding: 5px;

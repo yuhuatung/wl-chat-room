@@ -251,7 +251,7 @@ export default {
     align-items: flex-start;
     justify-content: flex-start;
     flex-direction: column;
-    max-width: 80%;
+    width: 100%;
     .message-username {
       font-size: 0.8rem;
       font-weight: bold;
@@ -290,7 +290,6 @@ export default {
     background: #fff;
     padding: 10px;
     font-size: 14px;
-    line-height: 28px;
     border-radius: 15px;
     margin: 5px 0 5px 0;
     overflow-wrap: break-word;
@@ -298,11 +297,16 @@ export default {
     white-space: pre-wrap;
     border-top-left-radius: 0px;
     word-break: break-word;
+    max-width: 80%;
+    p {
+      line-height: 28px;
+    }
     img,
     audio {
       max-width: 100%;
+      vertical-align: middle;
     }
-    .file{
+    .file {
       padding: 5px;
       font-size: 14px;
       cursor: pointer;
@@ -312,17 +316,17 @@ export default {
     .title {
       // font-size: 1em;
       font-weight: 700;
-      border-bottom: 1px solid #F2F2F2;
+      border-bottom: 1px solid #f2f2f2;
       padding-bottom: 0.25rem;
       font-size: 14px;
       line-height: 28px;
     }
 
     .related-problems {
-      color: #4290FF;
+      color: #4290ff;
       padding-top: 0.25rem;
       padding-bottom: 0.25rem;
-      border-bottom: 1px solid #F2F2F2;
+      border-bottom: 1px solid #f2f2f2;
     }
 
     .related-problems:last-of-type {
