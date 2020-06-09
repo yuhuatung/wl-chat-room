@@ -12,16 +12,24 @@
             <p>{{record.data}}</p>
           </template>
           <template v-if="record.dataType==ChatRecordDataType.IMAGE">
+            <p>{{record.data}}</p>
             <img :src="record.url" alt />
           </template>
           <template v-if="record.dataType==ChatRecordDataType.VOICE">
+            <p>{{record.data}} {{getFileSize}}</p>
             <audio :src="record.url" controls></audio>
           </template>
           <template v-if="record.dataType==ChatRecordDataType.DOC">
-            <div></div>
+            <div class="file" @click="download(record)">
+              <span class="flaticon-file" v-text="record.data+'('+getFileSize+')'"></span>
+            </div>
           </template>
         </div>
       </template>
+      <div class="text-tool" v-if="record.fail">
+        <span @click="removeSendRecord">移除</span>
+        <span @click="reSend">重传</span>
+      </div>
     </div>
     <div v-if="profilePictureConfig.myself && showPortrait" class="thum-container">
       <img
@@ -29,10 +37,6 @@
         :src="getPortrait"
         :style="{'width': profilePictureConfig.styles.width, 'height': profilePictureConfig.styles.height, 'border-radius': profilePictureConfig.styles.borderRadius}"
       />
-    </div>
-    <div class="text-tool" v-if="record.fail">
-      <span @click="removeSendRecord">移除</span>
-      <span @click="reSend">重传</span>
     </div>
   </div>
 </template>
@@ -103,7 +107,7 @@ export default {
       this.$emit("removeSendRecord");
     },
     reSend() {
-      this.$emit("reSend",);
+      this.$emit("reSend");
     }
   }
 };
@@ -159,14 +163,21 @@ export default {
   .message-text {
     background: #fff;
     padding: 10px;
-    line-height: 14px;
     border-radius: 15px;
     margin: 5px 0 5px 0;
     overflow-wrap: break-word;
-    text-align: left;
     white-space: pre-wrap;
     border-top-right-radius: 0px;
     word-break: break-word;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    p {
+      display: inline-block;
+      line-height: 28px;
+      max-width: unset;
+      text-align: left;
+    }
     img,
     audio {
       max-width: 100%;
@@ -176,6 +187,8 @@ export default {
         content: "發送失敗";
         color: #ff4081;
         font-size: 14px;
+        text-align: center;
+        display: block;
       }
     }
   }
