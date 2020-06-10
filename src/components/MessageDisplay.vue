@@ -35,6 +35,7 @@
               :isMobile="isMobile"
               @download="download(record)"
               @onImageClicked="onImageClicked"
+              @doScrollTop="doScrollTop"
             />
             <OtherMessage
               v-if="$parent.getMessageClassName(record) === 'message left'"
@@ -50,6 +51,7 @@
               @download="download(record)"
               @onImageClicked="onImageClicked"
               @getKnowledgeSolution="getKnowledgeSolution"
+              @doScrollTop="doScrollTop"
             />
           </div>
         </template>
@@ -93,6 +95,7 @@
         @download="download(record)"
         @removeSendRecord="removeSendRecord(record)"
         @reSend="reSend(record)"
+        @doScrollTop="doScrollTop"
       />
     </template>
   </div>
@@ -331,6 +334,9 @@ export default {
     },
     reSend(record) {
       this.$emit("reSend", record);
+    },
+    doScrollTop(){
+      this.$emit("doScrollTop");
     }
   }
 };

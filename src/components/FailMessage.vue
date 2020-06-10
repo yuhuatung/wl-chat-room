@@ -13,7 +13,7 @@
           </template>
           <template v-if="record.dataType==ChatRecordDataType.IMAGE">
             <p>{{record.data}}</p>
-            <img :src="record.url" alt />
+            <img @load="doScrollTop" :src="record.url" alt />
           </template>
           <template v-if="record.dataType==ChatRecordDataType.VOICE">
             <p>{{record.data}} {{getFileSize}}</p>
@@ -33,6 +33,7 @@
     </div>
     <div v-if="profilePictureConfig.myself && showPortrait" class="thum-container">
       <img
+        @load="doScrollTop"
         class="participant-thumb"
         :src="getPortrait"
         :style="{'width': profilePictureConfig.styles.width, 'height': profilePictureConfig.styles.height, 'border-radius': profilePictureConfig.styles.borderRadius}"
@@ -108,6 +109,9 @@ export default {
     },
     reSend() {
       this.$emit("reSend");
+    },
+    doScrollTop() {
+      this.$emit("doScrollTop");
     }
   }
 };
@@ -166,7 +170,7 @@ export default {
     margin-top: 5px;
     border-radius: 0.7rem;
     border-top-right-radius: 0px;
-    font-size: 1.1em;
+    font-size: 14px;
     text-align: left;
     word-wrap: break-word;
     word-break: break-all;

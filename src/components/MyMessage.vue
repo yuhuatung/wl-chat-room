@@ -24,8 +24,8 @@
             <p>{{record.data}}</p>
           </template>
           <template v-if="record.dataType==ChatRecordDataType.IMAGE">
-            <!-- <img :src="record.url" @click="show" alt /> -->
-            <img v-if="isMobile" v-gallery :src="record.url" />
+            <!-- <img :src="record.url" @load="load" @click="show" alt /> -->
+            <img v-if="isMobile" @load="doScrollTop" v-gallery :src="record.url" />
             <viewer
               v-if="!isMobile"
               :images="images"
@@ -33,9 +33,10 @@
               class="viewer"
               ref="viewer"
               @click="show"
+              
             >
               <template slot-scope="scope">
-                <img v-for="src in scope.images" :src="src" :key="src" />
+                <img v-for="src in scope.images" @load="doScrollTop" :src="src" :key="src" />
                 {{scope.options}}
               </template>
             </viewer>
@@ -70,6 +71,7 @@
     <div v-if="profilePictureConfig.myself && showPortrait" class="thum-container">
       <img
         class="participant-thumb"
+        @load="doScrollTop"
         :src="getPortrait"
         :style="{'width': profilePictureConfig.styles.width, 'height': profilePictureConfig.styles.height, 'border-radius': profilePictureConfig.styles.borderRadius}"
       />
@@ -196,6 +198,9 @@ export default {
     },
     show() {
       this.$viewer.show();
+    },
+    doScrollTop() {
+      this.$emit("doScrollTop")
     }
   }
 };

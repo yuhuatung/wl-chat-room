@@ -38,6 +38,7 @@
         @submitScore="submitScore"
         @removeSendRecord="removeSendRecord"
         @reSend="reSend"
+        @doScrollTop="doScrollTop"
         ref="messages"
       />
       <MessageManager
@@ -574,7 +575,9 @@ export default {
       if (this.messagesElement) {
         if (this.scrollDown) {
           // 滾動到指定位置
-          this.messagesElement.scrollTop = this.messagesElement.scrollHeight;
+          this.$nextTick(() => {
+            this.messagesElement.$el.scrollTop = this.messagesElement.$el.scrollHeight+10000;
+          });
         } else {
           this.messagesElement.scrollTop =
             this.messagesElement.scrollHeight -
@@ -711,7 +714,6 @@ export default {
           this.appendChats(result.added);
           this.hasLog = this.appendFirstChatRecord(result.data) > 0;
           // this.cdf.markForCheck();
-          // this.cdf.detectChanges();
           this.doScrollTop();
         } else {
           alert(result.message);
@@ -793,7 +795,7 @@ export default {
      * 批次上傳
      */
     uploadImages() {
-      // this.scrollDown = true;
+      this.scrollDown = true;
       let files = this.imageElement.files;
       if (files.length == 0) {
         return;
@@ -1436,7 +1438,7 @@ export default {
   height: auto;
   background-color: #fff;
   text-align: center;
-  border-left: 1px solid #E7E6E9;
+  border-left: 1px solid #e7e6e9;
   .cui-button {
     background-color: #fff;
     color: rgba(66, 144, 255, 1);
@@ -1450,11 +1452,12 @@ export default {
     padding: 4px 10px;
     margin-left: 1em;
     margin-bottom: 1em;
+    cursor: pointer;
   }
 }
 /* desktops */
 @media screen and (min-width: 767.98px) {
-  .quick-chat-container{
+  .quick-chat-container {
     width: 80%;
   }
   .chat-right {

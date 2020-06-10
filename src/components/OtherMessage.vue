@@ -2,6 +2,7 @@
   <div class="other-message-body">
     <div v-if="profilePictureConfig.others && showPortrait" class="thum-container">
       <img
+        @load="doScrollTop"
         class="participant-thumb"
         :src="getPortrait"
         :style="{'width': profilePictureConfig.styles.width, 'height': profilePictureConfig.styles.height, 'border-radius': profilePictureConfig.styles.borderRadius}"
@@ -31,8 +32,8 @@
             <p>{{record.data}}</p>
           </template>
           <template v-if="record.dataType==ChatRecordDataType.IMAGE">
-            <!-- <img :src="record.url" alt /> -->
-            <img v-if="isMobile" v-gallery :src="record.url" />
+            <!-- <img @load="doScrollTop" :src="record.url" alt /> -->
+            <img @load="doScrollTop" v-if="isMobile" v-gallery :src="record.url" />
             <viewer
               v-if="!isMobile"
               :images="images"
@@ -42,7 +43,7 @@
               @click="show"
             >
               <template slot-scope="scope">
-                <img v-for="src in scope.images" :src="src" :key="src" />
+                <img @load="doScrollTop" v-for="src in scope.images" :src="src" :key="src" />
                 {{scope.options}}
               </template>
             </viewer>
@@ -60,7 +61,7 @@
             <h3 v-text="record.announce.tag"></h3>
             <div v-text="record.announce.content"></div>
             <a :href="record.announce.picUrl" target="_blank">
-              <img :src="record.announce.dataUrl " />
+              <img @load="doScrollTop" :src="record.announce.dataUrl " />
             </a>
             <span>点击图片参加</span>
           </template>
@@ -239,6 +240,9 @@ export default {
     },
     show() {
       this.$viewer.show();
+    },
+    doScrollTop() {
+      this.$emit("doScrollTop");
     }
   }
 };
@@ -296,7 +300,7 @@ export default {
     margin-top: 5px;
     border-radius: 0.7rem;
     border-top-right-radius: 0px;
-    font-size: 1.1em;
+    font-size: 14px;
     text-align: left;
     word-wrap: break-word;
     word-break: break-all;
